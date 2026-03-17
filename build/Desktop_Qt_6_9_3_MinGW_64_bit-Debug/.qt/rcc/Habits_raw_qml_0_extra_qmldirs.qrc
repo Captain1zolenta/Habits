@@ -1,0 +1,8 @@
+<RCC>
+  <qresource prefix="/qt/qml/Habits/">
+    <file alias="qml/qmldir">C:/Users/Georgy/source/repos/Habits/build/Desktop_Qt_6_9_3_MinGW_64_bit-Debug/Habits/qml/qmldir</file>
+    <file alias="qml/components/qmldir">C:/Users/Georgy/source/repos/Habits/build/Desktop_Qt_6_9_3_MinGW_64_bit-Debug/Habits/qml/components/qmldir</file>
+    <file alias="qml/dialogs/qmldir">C:/Users/Georgy/source/repos/Habits/build/Desktop_Qt_6_9_3_MinGW_64_bit-Debug/Habits/qml/dialogs/qmldir</file>
+  </qresource>
+</RCC>
+
