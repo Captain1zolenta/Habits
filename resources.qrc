@@ -1,8 +1,9 @@
-<RCC>
+<!DOCTYPE RCC>
+<RCC version="1.0">
     <qresource prefix="/">
-        <file>qml/MainView.qml</file>
-        <file>qml/dialogs/AddEditDialog.qml</file>
-        <file>qml/components/HabitCard.qml</file>
         <file>main.qml</file>
+        <file>qml/MainView.qml</file>
+        <file>qml/components/HabitCard.qml</file>
+        <file>qml/dialogs/AddEditDialog.qml</file>
     </qresource>
 </RCC>

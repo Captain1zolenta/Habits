@@ -225,13 +225,12 @@ Rectangle {
                                 ColumnLayout {
                                     Layout.fillWidth: true
                                     spacing: 4
-                                    alignment: Qt.AlignHCenter
 
                                     Text {
                                         text: modelData
                                         font.pixelSize: 11
                                         color: "#888888"
-                                        anchors.horizontalCenter: parent.horizontalCenter
+                                        Layout.alignment: Qt.AlignHCenter
                                     }
 
                                     Rectangle {
@@ -356,13 +355,12 @@ Rectangle {
 
             ColumnLayout {
                 spacing: 4
-                alignment: Qt.AlignHCenter
 
                 Text {
                     text: "✓"
                     font.pixelSize: 22
                     color: "#ffffff"
-                    anchors.horizontalCenter: parent.horizontalCenter
+                    Layout.alignment: Qt.AlignHCenter
                 }
 
                 Text {
@@ -374,13 +372,12 @@ Rectangle {
 
             ColumnLayout {
                 spacing: 4
-                alignment: Qt.AlignHCenter
 
                 Text {
                     text: "⚙"
                     font.pixelSize: 22
                     color: "#888888"
-                    anchors.horizontalCenter: parent.horizontalCenter
+                    Layout.alignment: Qt.AlignHCenter
                 }
 
                 Text {
