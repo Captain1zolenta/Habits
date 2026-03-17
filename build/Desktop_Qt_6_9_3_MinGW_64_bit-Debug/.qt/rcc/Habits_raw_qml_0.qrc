@@ -1,9 +1,0 @@
-<RCC>
-  <qresource prefix="/qt/qml/Habits/">
-    <file alias="main.qml">C:/Users/Georgy/source/repos/Habits/main.qml</file>
-    <file alias="qml/MainView.qml">C:/Users/Georgy/source/repos/Habits/qml/MainView.qml</file>
-    <file alias="qml/components/HabitCard.qml">C:/Users/Georgy/source/repos/Habits/qml/components/HabitCard.qml</file>
-    <file alias="qml/dialogs/AddEditDialog.qml">C:/Users/Georgy/source/repos/Habits/qml/dialogs/AddEditDialog.qml</file>
-  </qresource>
-</RCC>
-

@@ -1,6 +1,0 @@
-<RCC>
-  <qresource prefix="/qt/qml/Habits">
-    <file alias="qmldir">C:/Users/Georgy/source/repos/Habits/build/Desktop_Qt_6_9_3_MinGW_64_bit-Debug/Habits/qmldir</file>
-  </qresource>
-</RCC>
-

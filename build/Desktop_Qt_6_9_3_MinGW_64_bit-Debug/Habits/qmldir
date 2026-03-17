@@ -1,8 +1,0 @@
-module Habits
-typeinfo Habits.qmltypes
-prefer :/qt/qml/Habits/
-MainView 1.0 qml/MainView.qml
-HabitCard 1.0 qml/components/HabitCard.qml
-AddEditDialog 1.0 qml/dialogs/AddEditDialog.qml
-depends QtQuick
-
