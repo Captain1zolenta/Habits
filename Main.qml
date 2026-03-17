@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Controls
+import Habits
 
 ApplicationWindow {
     width: 1280

@@ -14,7 +14,7 @@ int main(int argc, char *argv[])
         &app,
         []() { QCoreApplication::exit(-1); },
         Qt::QueuedConnection);
-     engine.loadFromModule("Habits", "Main");
+    engine.loadFromModule("Habits", "Main");
 
     return app.exec();
 }

@@ -11,7 +11,6 @@ qt_standard_project_setup(REQUIRES 6.8)
 qt_add_executable(appHabits
     main.cpp
     src/habitmodel.cpp
-
 )
 
 qt_add_qml_module(appHabits
@@ -22,22 +21,12 @@ qt_add_qml_module(appHabits
         qml/MainView.qml
         qml/components/HabitCard.qml
         qml/dialogs/AddEditDialog.qml
-
-
 )
 
-<<<<<<< HEAD
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
 # If you are developing for iOS or macOS you should consider setting an
 # explicit, fixed bundle identifier manually though.
 set_target_properties(appHabits PROPERTIES
-=======
-
-# Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
-# If you are developing for iOS or macOS you should consider setting an
-# explicit, fixed bundle identifier manually though.
-set_target_properties(Habits PROPERTIES
->>>>>>> main
 #    MACOSX_BUNDLE_GUI_IDENTIFIER com.example.appHabits
     MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
     MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
@@ -45,21 +34,9 @@ set_target_properties(Habits PROPERTIES
     WIN32_EXECUTABLE TRUE
 )
 
-<<<<<<< HEAD
 target_link_libraries(appHabits PRIVATE
     Qt6::Quick
     Qt6::Core
-=======
-target_link_libraries(Habits
-    PRIVATE Qt6::Quick Qt6::Core
-)
-
-include(GNUInstallDirs)
-install(TARGETS Habits
-    BUNDLE DESTINATION .
-    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
->>>>>>> main
 )
 
 include(GNUInstallDirs)
@@ -68,4 +45,3 @@ install(TARGETS appHabits
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
-
