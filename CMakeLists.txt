@@ -12,6 +12,7 @@ qt_standard_project_setup(REQUIRES 6.8)
 qt_add_executable(Habits
     main.cpp
     src/habitmodel.cpp
+    resources.qrc
 )
 
 qt_add_qml_module(Habits
@@ -22,6 +23,9 @@ qt_add_qml_module(Habits
         qml/MainView.qml
         qml/components/HabitCard.qml
         qml/dialogs/AddEditDialog.qml
+    SOURCES
+        src/habitmodel.cpp
+
 )
 
 target_link_libraries(Habits PRIVATE
