@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import Habits
 
 Rectangle {
     id: root
@@ -26,107 +27,9 @@ Rectangle {
         anchors.margins: 16
         spacing: 20
 
-        // Секция "Задачи"
-        ColumnLayout {
-            Layout.fillWidth: true
-            spacing: 10
 
-            RowLayout {
-                Layout.fillWidth: true
+        Tasks {
 
-                Text {
-                    text: "Задачи"
-                    font.pixelSize: 22
-                    font.bold: true
-                    color: "#ffffff"
-                }
-
-                Item { Layout.fillWidth: true }
-
-                Text {
-                    text: "▼"
-                    font.pixelSize: 12
-                    color: "#888888"
-                }
-            }
-
-            // Табы
-            RowLayout {
-                Layout.fillWidth: true
-                spacing: 8
-
-                Rectangle {
-                    implicitWidth: 100
-                    implicitHeight: 36
-                    radius: 18
-                    color: "#333333"
-
-                    Text {
-                        text: "Сегодня"
-                        anchors.centerIn: parent
-                        color: "#ffffff"
-                        font.pixelSize: 13
-                    }
-                }
-
-                Rectangle {
-                    implicitWidth: 100
-                    implicitHeight: 36
-                    radius: 18
-                    color: "transparent"
-
-                    Text {
-                        text: "Завтра"
-                        anchors.centerIn: parent
-                        color: "#888888"
-                        font.pixelSize: 13
-                    }
-                }
-
-                Rectangle {
-                    implicitWidth: 120
-                    implicitHeight: 36
-                    radius: 18
-                    color: "transparent"
-
-                    Text {
-                        text: "Без срока"
-                        anchors.centerIn: parent
-                        color: "#888888"
-                        font.pixelSize: 13
-                    }
-                }
-
-                Item { Layout.fillWidth: true }
-
-                Text {
-                    text: "🔍"
-                    font.pixelSize: 18
-                    color: "#888888"
-                    anchors.verticalCenter: parent.verticalCenter
-                }
-
-                Text {
-                    text: "⇅"
-                    font.pixelSize: 18
-                    color: "#888888"
-                    anchors.verticalCenter: parent.verticalCenter
-                }
-
-                Text {
-                    text: "📅"
-                    font.pixelSize: 18
-                    color: "#888888"
-                    anchors.verticalCenter: parent.verticalCenter
-                }
-            }
-
-            Text {
-                text: "Нет задач"
-                color: "#666666"
-                font.pixelSize: 14
-                Layout.topMargin: 5
-            }
         }
 
         // Секция "Привычки"
