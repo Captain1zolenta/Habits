@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import Habits
 
 Rectangle {
     id: root
@@ -26,108 +27,8 @@ Rectangle {
         anchors.margins: 16
         spacing: 20
 
-        // Секция "Задачи"
-        ColumnLayout {
-            Layout.fillWidth: true
-            spacing: 10
-
-            RowLayout {
-                Layout.fillWidth: true
-
-                Text {
-                    text: "Задачи"
-                    font.pixelSize: 22
-                    font.bold: true
-                    color: "#ffffff"
-                }
-
-                Item { Layout.fillWidth: true }
-
-                Text {
-                    text: "▼"
-                    font.pixelSize: 12
-                    color: "#888888"
-                }
-            }
-
-            // Табы
-            RowLayout {
-                Layout.fillWidth: true
-                spacing: 8
-
-                Rectangle {
-                    implicitWidth: 100
-                    implicitHeight: 36
-                    radius: 18
-                    color: "#333333"
-
-                    Text {
-                        text: "Сегодня"
-                        anchors.centerIn: parent
-                        color: "#ffffff"
-                        font.pixelSize: 13
-                    }
-                }
-
-                Rectangle {
-                    implicitWidth: 100
-                    implicitHeight: 36
-                    radius: 18
-                    color: "transparent"
-
-                    Text {
-                        text: "Завтра"
-                        anchors.centerIn: parent
-                        color: "#888888"
-                        font.pixelSize: 13
-                    }
-                }
-
-                Rectangle {
-                    implicitWidth: 120
-                    implicitHeight: 36
-                    radius: 18
-                    color: "transparent"
-
-                    Text {
-                        text: "Без срока"
-                        anchors.centerIn: parent
-                        color: "#888888"
-                        font.pixelSize: 13
-                    }
-                }
-
-                Item { Layout.fillWidth: true }
-
-                Text {
-                    text: "🔍"
-                    font.pixelSize: 18
-                    color: "#888888"
-                    anchors.verticalCenter: parent.verticalCenter
-                }
-
-                Text {
-                    text: "⇅"
-                    font.pixelSize: 18
-                    color: "#888888"
-                    anchors.verticalCenter: parent.verticalCenter
-                }
-
-                Text {
-                    text: "📅"
-                    font.pixelSize: 18
-                    color: "#888888"
-                    anchors.verticalCenter: parent.verticalCenter
-                }
-            }
-
-            Text {
-                text: "Нет задач"
-                color: "#666666"
-                font.pixelSize: 14
-                Layout.topMargin: 5
-            }
-        }
+        // Вставка компонента Tasks
+        Tasks {}
 
         // Секция "Привычки"
         ColumnLayout {
@@ -165,145 +66,41 @@ Rectangle {
                 model: ListModel {
                     ListElement {
                         habitName: "Учить языки"
-                        currentStreak: "33 дня подряд"
+                        description: "Изучать английский по 30 минут"
+                        currentStreak: 33
+                        bestStreak: 0
                         day01: "09"; day02: "10"; day03: "11"
                         day04: "12"; day05: "13"; day06: "14"; day07: "15"
                     }
                     ListElement {
                         habitName: "Физ занятия"
-                        currentStreak: "0 дней подряд"
+                        description: "Пробежка 20 минут"
+                        currentStreak: 0
+                        bestStreak: 0
                         day01: "09"; day02: "10"; day03: "11"
-                        day04: "12"; day05: "13"; day06: "14"; day07: "15"
+                        day04: "12"; day05: "13"; day06: "14"; day07: "15"                        
                     }
                     ListElement {
                         habitName: "Кодить"
-                        currentStreak: "1 день подряд"
+                        description: "Писать код на Qt/QML"
+                        currentStreak: 1
+                        bestStreak: 0
                         day01: "09"; day02: "10"; day03: "11"
-                        day04: "12"; day05: "13"; day06: "14"; day07: "15"
+                        day04: "12"; day05: "13"; day06: "14"; day07: "15"                        
                     }
                 }
 
-                delegate: Rectangle {
+                // ИСПРАВЛЕНО: delegate использует HabitCard
+                delegate: HabitCard {
                     width: habitsListView.width
-                    height: habitContent.implicitHeight + 24
-                    radius: 16
-                    color: "#1a2f2f"
-
-                    ColumnLayout {
-                        id: habitContent
-                        anchors.fill: parent
-                        anchors.margins: 12
-                        spacing: 8
-
-                        // Название и счетчик
-                        RowLayout {
-                            Layout.fillWidth: true
-
-                            Text {
-                                text: model.habitName
-                                font.pixelSize: 16
-                                font.bold: true
-                                color: "#4ecdc4"
-                                Layout.fillWidth: true
-                            }
-
-                            Text {
-                                text: model.currentStreak
-                                font.pixelSize: 12
-                                color: "#888888"
-                            }
-                        }
-
-                        // Дни недели
-                        RowLayout {
-                            Layout.fillWidth: true
-                            spacing: 6
-
-                            Repeater {
-                                model: ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"]
-
-                                ColumnLayout {
-                                    Layout.fillWidth: true
-                                    spacing: 4
-
-                                    Text {
-                                        text: modelData
-                                        font.pixelSize: 11
-                                        color: "#888888"
-                                        Layout.alignment: Qt.AlignHCenter
-                                    }
-
-                                    Rectangle {
-                                        implicitWidth: 38
-                                        implicitHeight: 38
-                                        radius: 19
-                                        color: "#2a4a4a"
-
-                                        Text {
-                                            text: {
-                                                if (index === 0) return model.day01
-                                                if (index === 1) return model.day02
-                                                if (index === 2) return model.day03
-                                                if (index === 3) return model.day04
-                                                if (index === 4) return model.day05
-                                                if (index === 5) return model.day06
-                                                return model.day07
-                                            }
-                                            anchors.centerIn: parent
-                                            color: "#ffffff"
-                                            font.pixelSize: 13
-                                            font.bold: true
-                                        }
-                                    }
-                                }
-                            }
-                        }
-
-                        // Кнопки управления
-                        RowLayout {
-                            Layout.fillWidth: true
-                            Layout.topMargin: 4
-                            spacing: 8
-
-                            Rectangle {
-                                Layout.fillWidth: true
-                                implicitHeight: 32
-                                radius: 8
-                                color: "#2a4a4a"
-
-                                Text {
-                                    text: "Редактировать"
-                                    anchors.centerIn: parent
-                                    color: "#4ecdc4"
-                                    font.pixelSize: 12
-                                }
-
-                                MouseArea {
-                                    anchors.fill: parent
-                                    onClicked: console.log("Edit:", model.habitName)
-                                }
-                            }
-
-                            Rectangle {
-                                Layout.fillWidth: true
-                                implicitHeight: 32
-                                radius: 8
-                                color: "#3a1a1a"
-
-                                Text {
-                                    text: "Удалить"
-                                    anchors.centerIn: parent
-                                    color: "#ff6b6b"
-                                    font.pixelSize: 12
-                                }
-
-                                MouseArea {
-                                    anchors.fill: parent
-                                    onClicked: console.log("Delete:", model.habitName)
-                                }
-                            }
-                        }
-                    }
+                    habitName: modelData.habitName
+                    description: modelData.description
+                    currentStreakValue: modelData.currentStreak
+                    bestStreakValue: modelData.bestStreak
+                    // Передаём дни и выполненные дни в HabitCard
+                    day1: modelData.day01; day2: modelData.day02; day3: modelData.day03
+                    day4: modelData.day04; day5: modelData.day05; day6: modelData.day06; day7: modelData.day07
+                    completedDays: modelData.completedDays || [] // если есть в модели
                 }
             }
         }
@@ -316,9 +113,9 @@ Rectangle {
         height: 60
         radius: 30
         color: "#8b5cf6"
-        anchors.right: parent.right
+        anchors.horizontalCenter: parent.horizontalCenter
         anchors.bottom: bottomNav.top
-        anchors.rightMargin: 24
+        //anchors.rightMargin: 24
         anchors.bottomMargin: 80
 
         Text {
