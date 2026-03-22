@@ -163,8 +163,7 @@ ColumnLayout {
         opacity: visible ? 1.0 : 0.0
         Behavior on opacity { NumberAnimation { duration: 200 } }
 
-
-        Rectangle {
+        /*Rectangle {
             id: homeTab
             color: "red"
         }
@@ -175,6 +174,18 @@ ColumnLayout {
         Rectangle {
             id: activityTab
             color: "green"
+        }*/
+
+        TasksLayout{
+            id: oneone
+        }
+
+        TasksLayout{
+            id: twoto
+        }
+
+        TasksLayout{
+            id: threeee
         }
     }
 

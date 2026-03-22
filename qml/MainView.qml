@@ -212,35 +212,6 @@ Rectangle {
         }
     }
 
-    // Кнопка "+"
-    Rectangle {
-        id: addButton
-        width: 60
-        height: 60
-        radius: 30
-        color: "#8b5cf6"
-        anchors.right: parent.right
-        anchors.bottom: bottomNav.top
-        anchors.rightMargin: 24
-        anchors.bottomMargin: 80
-
-        Text {
-            text: "+"
-            font.pixelSize: 36
-            color: "#ffffff"
-            anchors.centerIn: parent
-            font.bold: true
-        }
-
-        MouseArea {
-            anchors.fill: parent
-            onClicked: {
-                console.log("Add new habit")
-                // addEditDialog.open()
-            }
-        }
-    }
-
     // Нижняя навигация
     Rectangle {
         id: bottomNav
@@ -255,6 +226,39 @@ Rectangle {
         RowLayout {
             anchors.centerIn: parent
             spacing: 60
+
+            ColumnLayout {
+                spacing: 4
+
+                // Кнопка "+"
+                Rectangle {
+                    id: addButton
+                    width: 60
+                    height: 60
+                    radius: 30
+                    color: "#8b5cf6"
+                    anchors.right: parent.right
+                    anchors.bottom: bottomNav.top
+                    anchors.rightMargin: 24
+                    anchors.bottomMargin: 80
+
+                    Text {
+                        text: "+"
+                        font.pixelSize: 36
+                        color: "#ffffff"
+                        anchors.centerIn: parent
+                        font.bold: true
+                    }
+
+                    MouseArea {
+                        anchors.fill: parent
+                        onClicked: {
+                            console.log("Add new habit")
+                            // addEditDialog.open()
+                        }
+                    }
+                }
+            }
 
             ColumnLayout {
                 spacing: 4
