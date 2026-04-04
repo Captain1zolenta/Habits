@@ -1,4 +1,4 @@
-import QtQuick
+import QtQuick 2.15
 import QtQuick.Controls
 import QtQuick.Layouts
 import Habits
@@ -24,12 +24,11 @@ Rectangle {
         anchors.bottom: bottomNav.top
         anchors.left: parent.left
         anchors.right: parent.right
-        anchors.margins: 16
-        spacing: 20
-
+        anchors.margins: 5
+        //spacing: 200
 
         Tasks {
-
+            Layout.fillWidth: true
         }
 
         // Секция "Привычки"
@@ -242,7 +241,7 @@ Rectangle {
                     anchors.rightMargin: 24
                     anchors.bottomMargin: 80
 
-                    Text {
+                    Label {
                         text: "+"
                         font.pixelSize: 36
                         color: "#ffffff"
@@ -263,17 +262,48 @@ Rectangle {
             ColumnLayout {
                 spacing: 4
 
-                Text {
+                Label {
                     text: "✓"
                     font.pixelSize: 22
                     color: "#ffffff"
                     Layout.alignment: Qt.AlignHCenter
                 }
 
-                Text {
-                    text: "Цели"
+                Label {
+                    text: qsTr("Цели")
                     font.pixelSize: 12
                     color: "#ffffff"
+                }
+
+                MouseArea {
+                    anchors.fill: parent
+                    onClicked: {
+                        console.log("Open Tasks")
+                    }
+                }
+            }
+
+            ColumnLayout {
+                spacing: 4
+
+                Label {
+                    text: "✓"
+                    font.pixelSize: 22
+                    color: "#ffffff"
+                    Layout.alignment: Qt.AlignHCenter
+                }
+
+                Label {
+                    text: qsTr("Привычки")
+                    font.pixelSize: 12
+                    color: "#ffffff"
+                }
+
+                MouseArea {
+                    anchors.fill: parent
+                    onClicked: {
+                        console.log("Open Habits")
+                    }
                 }
             }
 
@@ -288,9 +318,16 @@ Rectangle {
                 }
 
                 Text {
-                    text: "Настройки"
+                    text: qsTr("Настройки")
                     font.pixelSize: 12
                     color: "#888888"
+                }
+
+                MouseArea {
+                    anchors.fill: parent
+                    onClicked: {
+                        console.log("Open Preference")
+                    }
                 }
             }
         }
