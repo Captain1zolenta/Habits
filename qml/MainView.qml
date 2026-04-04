@@ -1,6 +1,7 @@
-import QtQuick
+import QtQuick 2.15
 import QtQuick.Controls
 import QtQuick.Layouts
+import Habits
 
 Rectangle {
     id: root
@@ -23,110 +24,11 @@ Rectangle {
         anchors.bottom: bottomNav.top
         anchors.left: parent.left
         anchors.right: parent.right
-        anchors.margins: 16
-        spacing: 20
+        anchors.margins: 5
+        //spacing: 200
 
-        // Секция "Задачи"
-        ColumnLayout {
+        Tasks {
             Layout.fillWidth: true
-            spacing: 10
-
-            RowLayout {
-                Layout.fillWidth: true
-
-                Text {
-                    text: "Задачи"
-                    font.pixelSize: 22
-                    font.bold: true
-                    color: "#ffffff"
-                }
-
-                Item { Layout.fillWidth: true }
-
-                Text {
-                    text: "▼"
-                    font.pixelSize: 12
-                    color: "#888888"
-                }
-            }
-
-            // Табы
-            RowLayout {
-                Layout.fillWidth: true
-                spacing: 8
-
-                Rectangle {
-                    implicitWidth: 100
-                    implicitHeight: 36
-                    radius: 18
-                    color: "#333333"
-
-                    Text {
-                        text: "Сегодня"
-                        anchors.centerIn: parent
-                        color: "#ffffff"
-                        font.pixelSize: 13
-                    }
-                }
-
-                Rectangle {
-                    implicitWidth: 100
-                    implicitHeight: 36
-                    radius: 18
-                    color: "transparent"
-
-                    Text {
-                        text: "Завтра"
-                        anchors.centerIn: parent
-                        color: "#888888"
-                        font.pixelSize: 13
-                    }
-                }
-
-                Rectangle {
-                    implicitWidth: 120
-                    implicitHeight: 36
-                    radius: 18
-                    color: "transparent"
-
-                    Text {
-                        text: "Без срока"
-                        anchors.centerIn: parent
-                        color: "#888888"
-                        font.pixelSize: 13
-                    }
-                }
-
-                Item { Layout.fillWidth: true }
-
-                Text {
-                    text: "🔍"
-                    font.pixelSize: 18
-                    color: "#888888"
-                    anchors.verticalCenter: parent.verticalCenter
-                }
-
-                Text {
-                    text: "⇅"
-                    font.pixelSize: 18
-                    color: "#888888"
-                    anchors.verticalCenter: parent.verticalCenter
-                }
-
-                Text {
-                    text: "📅"
-                    font.pixelSize: 18
-                    color: "#888888"
-                    anchors.verticalCenter: parent.verticalCenter
-                }
-            }
-
-            Text {
-                text: "Нет задач"
-                color: "#666666"
-                font.pixelSize: 14
-                Layout.topMargin: 5
-            }
         }
 
         // Секция "Привычки"
@@ -309,35 +211,6 @@ Rectangle {
         }
     }
 
-    // Кнопка "+"
-    Rectangle {
-        id: addButton
-        width: 60
-        height: 60
-        radius: 30
-        color: "#8b5cf6"
-        anchors.right: parent.right
-        anchors.bottom: bottomNav.top
-        anchors.rightMargin: 24
-        anchors.bottomMargin: 80
-
-        Text {
-            text: "+"
-            font.pixelSize: 36
-            color: "#ffffff"
-            anchors.centerIn: parent
-            font.bold: true
-        }
-
-        MouseArea {
-            anchors.fill: parent
-            onClicked: {
-                console.log("Add new habit")
-                // addEditDialog.open()
-            }
-        }
-    }
-
     // Нижняя навигация
     Rectangle {
         id: bottomNav
@@ -356,17 +229,81 @@ Rectangle {
             ColumnLayout {
                 spacing: 4
 
-                Text {
+                // Кнопка "+"
+                Rectangle {
+                    id: addButton
+                    width: 60
+                    height: 60
+                    radius: 30
+                    color: "#8b5cf6"
+                    anchors.right: parent.right
+                    anchors.bottom: bottomNav.top
+                    anchors.rightMargin: 24
+                    anchors.bottomMargin: 80
+
+                    Label {
+                        text: "+"
+                        font.pixelSize: 36
+                        color: "#ffffff"
+                        anchors.centerIn: parent
+                        font.bold: true
+                    }
+
+                    MouseArea {
+                        anchors.fill: parent
+                        onClicked: {
+                            console.log("Add new habit")
+                            // addEditDialog.open()
+                        }
+                    }
+                }
+            }
+
+            ColumnLayout {
+                spacing: 4
+
+                Label {
                     text: "✓"
                     font.pixelSize: 22
                     color: "#ffffff"
                     Layout.alignment: Qt.AlignHCenter
                 }
 
-                Text {
-                    text: "Цели"
+                Label {
+                    text: qsTr("Цели")
                     font.pixelSize: 12
                     color: "#ffffff"
+                }
+
+                MouseArea {
+                    anchors.fill: parent
+                    onClicked: {
+                        console.log("Open Tasks")
+                    }
+                }
+            }
+
+            ColumnLayout {
+                spacing: 4
+
+                Label {
+                    text: "✓"
+                    font.pixelSize: 22
+                    color: "#ffffff"
+                    Layout.alignment: Qt.AlignHCenter
+                }
+
+                Label {
+                    text: qsTr("Привычки")
+                    font.pixelSize: 12
+                    color: "#ffffff"
+                }
+
+                MouseArea {
+                    anchors.fill: parent
+                    onClicked: {
+                        console.log("Open Habits")
+                    }
                 }
             }
 
@@ -381,9 +318,16 @@ Rectangle {
                 }
 
                 Text {
-                    text: "Настройки"
+                    text: qsTr("Настройки")
                     font.pixelSize: 12
                     color: "#888888"
+                }
+
+                MouseArea {
+                    anchors.fill: parent
+                    onClicked: {
+                        console.log("Open Preference")
+                    }
                 }
             }
         }
