@@ -5,42 +5,48 @@ ListModel {
 
     ListElement {
 
-        numberTask: 1
-        descriptionTask: "Первая"
+        dateTask: "2023-11-25T14:30:00"
+        nameTask: "Утановить Кеды"
+        descriptionTask: "Нужно установить Alt Linux Рабочая станция последнюю версию на SSD диск с оболочкой KDE"
 
     }
 
     ListElement {
 
-        numberTask: 2
-        descriptionTask: "Вторая"
+        dateTask: "2024-11-25T14:30:00"
+        nameTask: "Постирать одежду"
+        descriptionTask: ""
 
     }
 
     ListElement {
 
-        numberTask: 3
-        descriptionTask: "Третья"
+        dateTask: "2025-11-25T14:30:00"
+        nameTask: "Составить резюме"
+        descriptionTask: ""
 
     }
 
     ListElement {
 
-        numberTask: 4
-        descriptionTask: "Четвертая"
+        dateTask: "2026-11-25T14:30:00"
+        nameTask: "Переустановить Винду"
+        descriptionTask: ""
     }
 
     ListElement {
 
-        numberTask: 5
-        descriptionTask: "Пятая"
+        dateTask: "2026-01-25T14:30:00"
+        nameTask: "Сделать коммит"
+        descriptionTask: ""
 
     }
 
     ListElement {
 
-        numberTask: 6
-        descriptionTask: "Шестая"
+        dateTask: "2026-04-25T14:30:00"
+        nameTask: "Прочитать Властелин колец"
+        descriptionTask: ""
 
     }
 }

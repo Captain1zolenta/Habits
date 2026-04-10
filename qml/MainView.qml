@@ -236,11 +236,6 @@ Rectangle {
                     height: 60
                     radius: 30
                     color: "#8b5cf6"
-                    anchors.right: parent.right
-                    anchors.bottom: bottomNav.top
-                    anchors.rightMargin: 24
-                    anchors.bottomMargin: 80
-
                     Label {
                         text: "+"
                         font.pixelSize: 36
@@ -249,12 +244,8 @@ Rectangle {
                         font.bold: true
                     }
 
-                    MouseArea {
-                        anchors.fill: parent
-                        onClicked: {
-                            console.log("Add new habit")
-                            // addEditDialog.open()
-                        }
+                    TapHandler {
+                        onTapped: console.log("Add new habit")
                     }
                 }
             }
@@ -275,11 +266,8 @@ Rectangle {
                     color: "#ffffff"
                 }
 
-                MouseArea {
-                    anchors.fill: parent
-                    onClicked: {
-                        console.log("Open Tasks")
-                    }
+                TapHandler {
+                    onTapped: console.log("Open Tasks")
                 }
             }
 
@@ -299,11 +287,8 @@ Rectangle {
                     color: "#ffffff"
                 }
 
-                MouseArea {
-                    anchors.fill: parent
-                    onClicked: {
-                        console.log("Open Habits")
-                    }
+                TapHandler {
+                    onTapped: console.log("Open Habits")
                 }
             }
 
@@ -323,11 +308,8 @@ Rectangle {
                     color: "#888888"
                 }
 
-                MouseArea {
-                    anchors.fill: parent
-                    onClicked: {
-                        console.log("Open Preference")
-                    }
+                TapHandler {
+                    onTapped: console.log("Open Preference")
                 }
             }
         }
