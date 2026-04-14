@@ -146,28 +146,6 @@ Rectangle {
                 }
             }
 
-            // Space to the right: streaks
-            Item {
-                Layout.fillWidth: true
-                Layout.preferredWidth: 1
-            }
-
-            ColumnLayout {
-                spacing: 4
-                Layout.alignment: Qt.AlignRight
-
-                Text {
-                    text: "Текущая: " + habitCard.currentStreakValue + " дн."
-                    font.pixelSize: 12
-                    color: "#888888"
-                }
-
-                Text {
-                    text: "Лучшая: " + habitCard.bestStreakValue + " дн."
-                    font.pixelSize: 12
-                    color: "#666666"
-                }
-            }
         }
 
         // Simple button for marking today's completion

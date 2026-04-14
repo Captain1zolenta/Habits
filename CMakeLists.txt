@@ -21,9 +21,19 @@ qt_add_qml_module(appHabits
         qml/MainView.qml
         qml/components/HabitCard.qml
         qml/dialogs/AddEditDialog.qml
-        qml/components/TaskCard.qml
+        qml/components/TaskDelegate.qml
         qml/components/Tasks.qml
+        qml/components/TaskModel.qml
+        qml/components/HabitsView.qml
+    RESOURCES
+        qtquickcontrols2.conf
+)
 
+qt_add_resources(appHabits "controls_conf"
+    PREFIX
+        "/"
+    FILES
+        "qtquickcontrols2.conf"
 )
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.

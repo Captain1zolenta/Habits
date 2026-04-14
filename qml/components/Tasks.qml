@@ -1,4 +1,4 @@
-import QtQuick
+import QtQuick 2.15
 import QtQuick.Controls
 import QtQuick.Layouts
 
@@ -127,7 +127,6 @@ ColumnLayout {
             background: Rectangle {
                 implicitWidth: 100
                 implicitHeight: 36
-                radius: 18
                 color: "#333333"
             }
         }
@@ -137,7 +136,6 @@ ColumnLayout {
             background: Rectangle {
                 implicitWidth: 100
                 implicitHeight: 36
-                radius: 18
                 color: "#333333"
             }
         }
@@ -147,7 +145,6 @@ ColumnLayout {
             background: Rectangle {
                 implicitWidth: 100
                 implicitHeight: 36
-                radius: 18
                 color: "#333333"
             }
         }
@@ -163,8 +160,7 @@ ColumnLayout {
         opacity: visible ? 1.0 : 0.0
         Behavior on opacity { NumberAnimation { duration: 200 } }
 
-
-        Rectangle {
+        /*Rectangle {
             id: homeTab
             color: "red"
         }
@@ -175,7 +171,17 @@ ColumnLayout {
         Rectangle {
             id: activityTab
             color: "green"
+        }*/
+
+        ListView {
+            id: tasksListView
+            Layout.fillHeight: true  // Занять всё доступное свободное место
+            Layout.fillWidth: true
+            model: TaskModel {}
+            delegate: TaskDelegate {}
+            clip: true
         }
+
     }
 
     /*Text {

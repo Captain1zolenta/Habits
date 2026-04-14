@@ -1,4 +1,4 @@
-import QtQuick
+import QtQuick 2.15
 import QtQuick.Controls
 import QtQuick.Layouts
 import Habits
@@ -24,11 +24,12 @@ Rectangle {
         anchors.bottom: bottomNav.top
         anchors.left: parent.left
         anchors.right: parent.right
-        anchors.margins: 16
-        spacing: 20
+        anchors.margins: 5
+        //spacing: 200
 
-        // Вставка компонента Tasks
-        Tasks {}
+        Tasks {
+            Layout.fillWidth: true
+        }
 
         // Секция "Привычки"
         ColumnLayout {
@@ -106,35 +107,6 @@ Rectangle {
         }
     }
 
-    // Кнопка "+"
-    Rectangle {
-        id: addButton
-        width: 60
-        height: 60
-        radius: 30
-        color: "#8b5cf6"
-        anchors.horizontalCenter: parent.horizontalCenter
-        anchors.bottom: bottomNav.top
-        //anchors.rightMargin: 24
-        anchors.bottomMargin: 80
-
-        Text {
-            text: "+"
-            font.pixelSize: 36
-            color: "#ffffff"
-            anchors.centerIn: parent
-            font.bold: true
-        }
-
-        MouseArea {
-            anchors.fill: parent
-            onClicked: {
-                console.log("Add new habit")
-                // addEditDialog.open()
-            }
-        }
-    }
-
     // Нижняя навигация
     Rectangle {
         id: bottomNav
@@ -153,17 +125,66 @@ Rectangle {
             ColumnLayout {
                 spacing: 4
 
-                Text {
+                // Кнопка "+"
+                Rectangle {
+                    id: addButton
+                    width: 60
+                    height: 60
+                    radius: 30
+                    color: "#8b5cf6"
+                    Label {
+                        text: "+"
+                        font.pixelSize: 36
+                        color: "#ffffff"
+                        anchors.centerIn: parent
+                        font.bold: true
+                    }
+
+                    TapHandler {
+                        onTapped: console.log("Add new habit")
+                    }
+                }
+            }
+
+            ColumnLayout {
+                spacing: 4
+
+                Label {
                     text: "✓"
                     font.pixelSize: 22
                     color: "#ffffff"
                     Layout.alignment: Qt.AlignHCenter
                 }
 
-                Text {
-                    text: "Цели"
+                Label {
+                    text: qsTr("Цели")
                     font.pixelSize: 12
                     color: "#ffffff"
+                }
+
+                TapHandler {
+                    onTapped: console.log("Open Tasks")
+                }
+            }
+
+            ColumnLayout {
+                spacing: 4
+
+                Label {
+                    text: "✓"
+                    font.pixelSize: 22
+                    color: "#ffffff"
+                    Layout.alignment: Qt.AlignHCenter
+                }
+
+                Label {
+                    text: qsTr("Привычки")
+                    font.pixelSize: 12
+                    color: "#ffffff"
+                }
+
+                TapHandler {
+                    onTapped: console.log("Open Habits")
                 }
             }
 
@@ -178,9 +199,13 @@ Rectangle {
                 }
 
                 Text {
-                    text: "Настройки"
+                    text: qsTr("Настройки")
                     font.pixelSize: 12
                     color: "#888888"
+                }
+
+                TapHandler {
+                    onTapped: console.log("Open Preference")
                 }
             }
         }
