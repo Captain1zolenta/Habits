@@ -10,6 +10,7 @@ qt_standard_project_setup(REQUIRES 6.8)
 
 qt_add_executable(appHabits
     main.cpp
+    src/habit.cpp
     src/habitmodel.cpp
 )
 
@@ -27,6 +28,8 @@ qt_add_qml_module(appHabits
         qml/components/HabitsView.qml
     RESOURCES
         qtquickcontrols2.conf
+        SOURCES src/habit.h
+        SOURCES src/habit.h src/habit.cpp
 )
 
 qt_add_resources(appHabits "controls_conf"

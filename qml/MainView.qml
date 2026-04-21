@@ -7,6 +7,11 @@ Rectangle {
     id: root
     color: "#0a0a0a"
 
+    // Модель привычек единый экземпляр
+        HabitModel {
+            id: habitModel
+        }
+
     // Заголовок
     Text {
         id: headerTitle
@@ -25,7 +30,6 @@ Rectangle {
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.margins: 5
-        //spacing: 200
 
         Tasks {
             Layout.fillWidth: true
@@ -56,52 +60,37 @@ Rectangle {
                 }
             }
 
-            // Список привычек
+            // Список привычек с использованием модели
             ListView {
                 id: habitsListView
                 Layout.fillWidth: true
                 Layout.fillHeight: true
                 spacing: 12
-                clip: true
+                clip: true                
 
-                model: ListModel {
-                    ListElement {
-                        habitName: "Учить языки"
-                        description: "Изучать английский по 30 минут"
-                        currentStreak: 33
-                        bestStreak: 0
-                        day01: "09"; day02: "10"; day03: "11"
-                        day04: "12"; day05: "13"; day06: "14"; day07: "15"
-                    }
-                    ListElement {
-                        habitName: "Физ занятия"
-                        description: "Пробежка 20 минут"
-                        currentStreak: 0
-                        bestStreak: 0
-                        day01: "09"; day02: "10"; day03: "11"
-                        day04: "12"; day05: "13"; day06: "14"; day07: "15"                        
-                    }
-                    ListElement {
-                        habitName: "Кодить"
-                        description: "Писать код на Qt/QML"
-                        currentStreak: 1
-                        bestStreak: 0
-                        day01: "09"; day02: "10"; day03: "11"
-                        day04: "12"; day05: "13"; day06: "14"; day07: "15"                        
-                    }
-                }
+                model: habitModel
 
-                // ИСПРАВЛЕНО: delegate использует HabitCard
                 delegate: HabitCard {
-                    width: habitsListView.width
-                    habitName: modelData.habitName
-                    description: modelData.description
-                    currentStreakValue: modelData.currentStreak
-                    bestStreakValue: modelData.bestStreak
-                    // Передаём дни и выполненные дни в HabitCard
-                    day1: modelData.day01; day2: modelData.day02; day3: modelData.day03
-                    day4: modelData.day04; day5: modelData.day05; day6: modelData.day06; day7: modelData.day07
-                    completedDays: modelData.completedDays || [] // если есть в модели
+                    width: habitsListView.width                    
+                    habitIndex: index
+                    habitModel: habitModel
+
+                    habitId: model.habitId
+                    habitName: model.habitName
+                    description: model.description
+                    currentStreakValue: model.currentStreak
+                    bestStreakValue: model.bestStreak
+
+                    // Передаём дни из completedDaysList (массив строк "DD")
+                    day1: model.completedDaysList && model.completedDaysList.length > 0 ? model.completedDaysList[0] : ""
+                    day2: model.completedDaysList && model.completedDaysList.length > 1 ? model.completedDaysList[1] : ""
+                    day3: model.completedDaysList && model.completedDaysList.length > 2 ? model.completedDaysList[2] : ""
+                    day4: model.completedDaysList && model.completedDaysList.length > 3 ? model.completedDaysList[3] : ""
+                    day5: model.completedDaysList && model.completedDaysList.length > 4 ? model.completedDaysList[4] : ""
+                    day6: model.completedDaysList && model.completedDaysList.length > 5 ? model.completedDaysList[5] : ""
+                    day7: model.completedDaysList && model.completedDaysList.length > 6 ? model.completedDaysList[6] : ""
+
+                    completedDaysList: model.completedDaysList || []
                 }
             }
         }
@@ -141,7 +130,10 @@ Rectangle {
                     }
 
                     TapHandler {
-                        onTapped: console.log("Add new habit")
+                        onTapped: {
+                            console.log("Add new habit")
+                            habitModel.addHabit("Новая привычка", "Описание")
+                        }
                     }
                 }
             }
