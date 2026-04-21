@@ -6,7 +6,7 @@ HabitModel::HabitModel(QObject *parent)
 {
 }
 
-int HabitModel::rowCount(const QObject *parent) const
+int HabitModel::rowCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent)
     return m_habits.size();

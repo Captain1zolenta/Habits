@@ -5,11 +5,13 @@
 #include <QString>
 #include <QList>
 #include <QDate>
+#include <QUuid>
+#include <QMap>
+#include <QVariant>
 
 class Habit : public QObject
 {
     Q_OBJECT
-    QML_ELEMENT
 
     // Основные свойства
     Q_PROPERTY(QString id READ id WRITE setId NOTIFY idChanged)

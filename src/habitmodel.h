@@ -3,14 +3,12 @@
 
 #include <QObject>
 #include <QAbstractListModel>
-#include <QQmlEngine>
 #include <QList>
 #include "habit.h"
 
 class HabitModel : public QAbstractListModel
 {
-    Q_OBJECT
-    QML_ELEMENT
+    Q_OBJECT    
 
 public:
     enum HabitRoles {
@@ -26,7 +24,7 @@ public:
     explicit HabitModel(QObject *parent = nullptr);
 
     // Базовые методы модели
-    int rowCount(const QObject *parent = nullptr) const override;
+    int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
     bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole) override;
     QHash<int, QByteArray> roleNames() const override;

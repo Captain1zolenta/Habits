@@ -80,7 +80,7 @@ QStringList Habit::completedDaysList() const
 
 void Habit::toggleDayCompletion(const QDate& date)
 {
-    QDate normalizedDate = date.startOfDay();
+    QDate normalizedDate = date.startOfDay().date();
 
     int index = -1;
     for (int i = 0; i < m_completedDates.size(); ++i) {
