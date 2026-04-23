@@ -4,7 +4,7 @@ import QtQuick.Controls
 
 ItemDelegate {
     id: root
-    width: parent.width
+    width: ListView.view.width
     checkable: true
     padding: 0
 
@@ -14,11 +14,10 @@ ItemDelegate {
         color: "transparent"
     }*/
 
-    required property int index
-    required property string dateTask
-    required property string descriptionTask
-    required property string nameTask
+    property int index
+    required property var model
     property bool complete: false
+    required property var db
 
     onClicked: ListView.view.currentIndex = index
 
@@ -34,8 +33,7 @@ ItemDelegate {
             ColumnLayout {
 
                 Label {
-                    id: nameTask
-                    text: root.nameTask
+                    text: model.nameTask
                     font.pixelSize: 16
                     font.bold: true
                     font.strikeout: root.complete
@@ -45,11 +43,14 @@ ItemDelegate {
 
                 Label {
                     text: {
+                        /*
                         // Парсим строку в дату
                         var dt = new Date(root.dateTask)
                         // Проверяем валидность
                         if (isNaN(dt.getTime())) return "Некорректная дата"
                         return Qt.formatDateTime(dt, "dd.MM.yyyy, hh:mm")
+                        */
+                        model.dateTask
                     }
                     font.pixelSize: 12
                     font.strikeout: root.complete
@@ -73,7 +74,7 @@ ItemDelegate {
             visible: root.checked
 
             Label {
-                text: root.descriptionTask
+                text: model.describeTask
                 font.pixelSize: 16
                 font.bold: true
                 font.strikeout: root.complete
@@ -121,7 +122,7 @@ ItemDelegate {
 
                     MouseArea {
                         anchors.fill: parent
-                        onClicked: console.log("Delete:")
+                        onClicked: db.deleteTask(model.id)
                     }
                 }
             }

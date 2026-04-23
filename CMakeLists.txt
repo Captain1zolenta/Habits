@@ -4,7 +4,7 @@ project(Habits VERSION 0.1 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(Qt6 REQUIRED COMPONENTS Quick Core)
+find_package(Qt6 REQUIRED COMPONENTS Quick Sql)
 
 qt_standard_project_setup(REQUIRES 6.8)
 
@@ -25,6 +25,10 @@ qt_add_qml_module(appHabits
         qml/components/Tasks.qml
         qml/components/TaskModel.qml
         qml/components/HabitsView.qml
+        qml/dialogs/AddTaskDialog.qml
+    SOURCES
+        dbmanager.h
+        dbmanager.cpp
     RESOURCES
         qtquickcontrols2.conf
 )
@@ -50,6 +54,7 @@ set_target_properties(appHabits PROPERTIES
 target_link_libraries(appHabits PRIVATE
     Qt6::Quick
     Qt6::Core
+    Qt6::Sql
 )
 
 include(GNUInstallDirs)
