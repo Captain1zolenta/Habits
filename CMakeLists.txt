@@ -28,7 +28,6 @@ qt_add_qml_module(appHabits
         qml/components/TaskModel.qml
         qml/components/Tasks.qml
 
-
     RESOURCES
         qtquickcontrols2.conf
 

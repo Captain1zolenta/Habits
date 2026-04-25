@@ -3,42 +3,23 @@ import QtQuick.Layouts
 import QtQuick.Controls
 import Habits
 
-// Rectangle serves as the main container for the habit card
 Rectangle {
     id: habitCard
 
-    // --- User properties ---
+    // --- Свойства ---
     property string habitId: ""
     property alias habitName: nameText.text
     property alias description: descText.text
 
-    // Счётчики серий (привязываются к модели)
     property int currentStreakValue: 0
     property int bestStreakValue: 0
 
-    // Для отображения
-    property string currentStreakDisplay: currentStreakValue + " дн. подряд"
-    property string bestStreakDisplay: "Лучшая: " + bestStreakValue + " дн."
+    // Список дат завершений (приходит из модели как QList<QDate>)
+    property var completedDates: []
 
-    // Массив дат завершений (строки в формате "DD")
-    property var completedDaysList: []
-
-    // Дни недели для отображения (передаются из модели или вычисляются)
-    property string day1: ""
-    property string day2: ""
-    property string day3: ""
-    property string day4: ""
-    property string day5: ""
-    property string day6: ""
-    property string day7: ""
-
-    // Индекс в модели (для вызова методов)
     property int habitIndex: -1
-
-    // Ссылка на модель
     property var habitModel: null
 
-    // --- Default parameters ---
     width: parent ? parent.width : 300
     height: contentColumn.implicitHeight + 2 * anchors.margins
     radius: 16
@@ -46,20 +27,19 @@ Rectangle {
     border.color: "#4ecdc4"
     border.width: 1
 
-    // --- Card content ---
     ColumnLayout {
         id: contentColumn
         anchors.fill: parent
         anchors.margins: 12
         spacing: 10
 
-        // Header row: Name and streak counters (top right)
+        // Header: Имя и счетчики
         RowLayout {
             Layout.fillWidth: true
             spacing: 8
 
             Text {
-                id: nameText                
+                id: nameText
                 font.pixelSize: 16
                 font.bold: true
                 color: "#4ecdc4"
@@ -67,27 +47,26 @@ Rectangle {
                 elide: Text.ElideRight
             }
 
-            // Current streak counter (top right)
             Text {
-                id: currentStreakText
-                text: habitCard.currentStreakDisplay // Binding to calculated property
+                text: currentStreakValue + " дн."
                 font.pixelSize: 12
                 color: "#4ecdc4"
                 font.bold: true
+                ToolTip.visible: hovered
+                ToolTip.text: "Текущая серия"
             }
 
-            // Best streak counter (top right, after current)
             Text {
-                id: bestStreakText
-                text: habitCard.bestStreakDisplay
+                text: "Макс: " + bestStreakValue
                 font.pixelSize: 11
                 color: "#888888"
+                ToolTip.visible: hovered
+                ToolTip.text: "Лучшая серия"
             }
         }
 
-        // Description (shown if not empty)
         Text {
-            id: descText            
+            id: descText
             font.pixelSize: 13
             color: "#aaaaaa"
             wrapMode: Text.Wrap
@@ -95,69 +74,84 @@ Rectangle {
             visible: text.length > 0
         }
 
-        // Days of the week row with circles
+        // Дни недели
         RowLayout {
             Layout.fillWidth: true
-            spacing: 8
+            spacing: 6
 
             Repeater {
-                model: ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"]
+                model: 7 // 0=Пн, 1=Вт, ..., 6=Вс
 
                 ColumnLayout {
                     Layout.fillWidth: true
                     spacing: 4
 
+                    // Название дня (Пн, Вт...)
                     Text {
-                        text: modelData
+                        text: ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"][index]
                         font.pixelSize: 11
                         color: "#888888"
                         Layout.alignment: Qt.AlignHCenter
                     }
 
                     Rectangle {
-                        implicitWidth: 38
-                        implicitHeight: 38
-                        radius: 19
-                        // Color depends on whether this day is completed
-                        color: habitCard.completedDaysList.includes(habitCard["day" + (index + 1)])
-                                   ? "#2a7f2a"  // green - completed
-                                   : "#2a4a4a"  // gray - not completed
+                        implicitWidth: 36
+                        implicitHeight: 36
+                        radius: 18
 
-                        // Checkmark icon when completed
+                        // Вычисляем дату для этого дня недели (берем текущую неделю)
+                        // Qt.Day.Monday = 1, ..., Sunday = 7
+                        // index у нас 0..6, значит день недели = index + 1
+                        property date targetDate: {
+                            var today = new Date();
+                            var currentDayOfWeek = today.getDay(); // 0=Sun, 1=Mon...
+                            // Нормализуем: пусть Пн=1, Вс=7
+                            var normalizedCurrent = currentDayOfWeek === 0 ? 7 : currentDayOfWeek;
+                            var targetDay = index + 1;
+
+                            var diff = targetDay - normalizedCurrent;
+                            var target = new Date(today);
+                            target.setDate(today.getDate() + diff);
+                            return target;
+                        }
+
+                        // Форматируем дату для сравнения "YYYY-MM-DD"
+                        property string dateStr: Qt.formatDate(targetDate, "yyyy-MM-dd")
+
+                        // Проверяем, есть ли эта дата в массиве completedDates
+                        // completedDates приходит как список объектов QDate, нужно сравнить строки
+                        property bool isCompleted: {
+                            for (var i = 0; i < habitCard.completedDates.length; i++) {
+                                var d = habitCard.completedDates[i];
+                                // d может быть объектом Date или QVariant
+                                if (Qt.formatDate(d, "yyyy-MM-dd") === dateStr) {
+                                    return true;
+                                }
+                            }
+                            return false;
+                        }
+
+                        color: isCompleted ? "#2a7f2a" : "#2a4a4a"
+
+                        Behavior on color {
+                            ColorAnimation { duration: 200 }
+                        }
+
+                        // Галочка
                         Text {
-                            text: habitCard.completedDaysList.includes(habitCard["day" + (index + 1)]) ? "✓" : ""
+                            text: isCompleted ? "✓" : ""
                             anchors.centerIn: parent
                             color: "#ffffff"
                             font.pixelSize: 20
                             font.bold: true
+                            visible: isCompleted
                         }
-
-                        // Day number (small, at bottom)
-                                                Text {
-                                                    text: habitCard["day" + (index + 1)] || ""
-                                                    anchors.bottom: parent.bottom
-                                                    anchors.bottomMargin: 2
-                                                    anchors.horizontalCenter: parent.horizontalCenter
-                                                    color: "#ffffff"
-                                                    font.pixelSize: 9
-                                                }
 
                         MouseArea {
                             anchors.fill: parent
                             onClicked: {
                                 if (habitCard.habitIndex >= 0 && habitCard.habitModel) {
-                                    // Вызываем метод модели для переключения дня
-                                    let dayNum = parseInt(habitCard["day" + (index + 1)]);
-                                    if (!isNaN(dayNum)) {
-                                        // Создаём дату (предполагаем текущий месяц/год для примера)
-                                        let today = new Date();
-                                        let clickDate = new Date(today.getFullYear(), today.getMonth(), dayNum);
-                                        habitCard.habitModel.toggleDayCompletion(habitCard.habitIndex, Qt.formatDate(clickDate, "yyyy-MM-dd"));
-                                    }
-                                } else {
-                                    // Демо-режим без модели
-                                    console.log("Toggle day:", index + 1,
-                                    habitCard["day" + (index + 1)]);
+                                    habitCard.habitModel.toggleDayCompletion(habitCard.habitIndex, targetDate);
                                 }
                             }
                         }
@@ -166,16 +160,16 @@ Rectangle {
             }
         }
 
-        // Control buttons (edit, delete) - inside the card container
+        // Кнопки
         RowLayout {
             Layout.fillWidth: true
             Layout.topMargin: 4
             spacing: 8
 
             Button {
-                text: "Редактировать"
+                text: "Ред."
                 Layout.fillWidth: true
-                Layout.preferredHeight: 32                
+                Layout.preferredHeight: 32
 
                 background: Rectangle {
                     color: parent.hovered || parent.pressed ? "#3a5a5a" : "#2a4a4a"
@@ -187,14 +181,9 @@ Rectangle {
                     color: "#4ecdc4"
                     font.pixelSize: 12
                     horizontalAlignment: Text.AlignHCenter
-                    verticalAlignment: Text.AlignVCenter
                 }
-
-                onClicked: {
-                    console.log("Редактировать привычку:", habitCard.habitName)
-                    // emit editRequested(habitCard.habitIndex)
-                    }
-                }
+                onClicked: console.log("Edit", habitIndex)
+            }
 
             Button {
                 text: "Удалить"
@@ -211,11 +200,9 @@ Rectangle {
                     color: "#ff6b6b"
                     font.pixelSize: 12
                     horizontalAlignment: Text.AlignHCenter
-                    verticalAlignment: Text.AlignVCenter
                 }
 
                 onClicked: {
-                    console.log("Удалить привычку:", habitCard.habitName)
                     if (habitCard.habitIndex >= 0 && habitCard.habitModel) {
                         habitCard.habitModel.removeHabit(habitCard.habitIndex);
                     }

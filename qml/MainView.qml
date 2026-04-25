@@ -7,11 +7,6 @@ Rectangle {
     id: root
     color: "#0a0a0a"
 
-    // Модель привычек единый экземпляр
-        HabitModel {
-            id: habitModel
-        }
-
     // Заголовок
     Text {
         id: headerTitle
@@ -30,6 +25,7 @@ Rectangle {
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.margins: 5
+        //spacing: 200
 
         Tasks {
             Layout.fillWidth: true
@@ -54,43 +50,53 @@ Rectangle {
                 Item { Layout.fillWidth: true }
 
                 Text {
-                    text: "▼"
+                    text: ""
                     font.pixelSize: 12
                     color: "#888888"
                 }
             }
 
-            // Список привычек с использованием модели
+            // Список привычек
             ListView {
                 id: habitsListView
                 Layout.fillWidth: true
                 Layout.fillHeight: true
                 spacing: 12
-                clip: true                
+                clip: true
 
+                // Используем модель из C++
                 model: habitModel
 
                 delegate: HabitCard {
-                    width: habitsListView.width                    
-                    habitIndex: index
-                    habitModel: habitModel
+                    id: habitDelegate
+                    width: habitsListView.width
 
+                    // Передаем индекс и ссылку на модель для действий
+                    habitIndex: index
+                    habitModel: root.habitModel // или просто habitModel, если видно контекст
+
+                    // Привязка свойств из модели
                     habitId: model.habitId
                     habitName: model.habitName
                     description: model.description
                     currentStreakValue: model.currentStreak
                     bestStreakValue: model.bestStreak
 
-                    // Передаём дни из completedDaysList (массив строк "DD")
-                    day1: model.completedDaysList && model.completedDaysList.length > 0 ? model.completedDaysList[0] : ""
-                    day2: model.completedDaysList && model.completedDaysList.length > 1 ? model.completedDaysList[1] : ""
-                    day3: model.completedDaysList && model.completedDaysList.length > 2 ? model.completedDaysList[2] : ""
-                    day4: model.completedDaysList && model.completedDaysList.length > 3 ? model.completedDaysList[3] : ""
-                    day5: model.completedDaysList && model.completedDaysList.length > 4 ? model.completedDaysList[4] : ""
-                    day6: model.completedDaysList && model.completedDaysList.length > 5 ? model.completedDaysList[5] : ""
-                    day7: model.completedDaysList && model.completedDaysList.length > 6 ? model.completedDaysList[6] : ""
+                    // САМОЕ ВАЖНОЕ: Передаем список дат (QList<QDate>) напрямую
+                    // В HabitCard нужно свойство property var completedDates
+                    completedDates: model.completedDates
 
-                    completedDaysList: model.completedDaysList || []
+                    // Старые свойства day1..day7 больше не нужны, если мы передаем весь список дат
+                    // и вычисляем состояние круга внутри HabitCard на основе даты.
+                }
+
+                // Подсказка, если список пуст
+                Label {
+                    anchors.centerIn: parent
+                    text: "Список привычек пуст. Нажмите +, чтобы добавить."
+                    color: "#666666"
+                    horizontalAlignment: Text.AlignHCenter
+                    visible: habitsListView.count === 0
                 }
             }
         }
@@ -111,10 +117,10 @@ Rectangle {
             anchors.centerIn: parent
             spacing: 60
 
+            // Кнопка "+" (Добавить)
             ColumnLayout {
                 spacing: 4
 
-                // Кнопка "+"
                 Rectangle {
                     id: addButton
                     width: 60
@@ -131,71 +137,75 @@ Rectangle {
 
                     TapHandler {
                         onTapped: {
-                            console.log("Add new habit")
-                            habitModel.addHabit("Новая привычка", "Описание")
+                            console.log("Add new habit clicked")
+                            // Добавляем тестовую привычку при клике
+                            if (root.habitModel) {
+                                root.habitModel.addHabit("Новая цель", "Описание цели");
+                            }
                         }
                     }
                 }
+
+                Label {
+                    text: qsTr("Добавить")
+                    font.pixelSize: 10
+                    color: "#ffffff"
+                    Layout.alignment: Qt.AlignHCenter
+                }
             }
 
+            // Кнопка "Цели" (Tasks)
             ColumnLayout {
                 spacing: 4
-
                 Label {
                     text: "✓"
                     font.pixelSize: 22
                     color: "#ffffff"
                     Layout.alignment: Qt.AlignHCenter
                 }
-
                 Label {
                     text: qsTr("Цели")
                     font.pixelSize: 12
                     color: "#ffffff"
                 }
-
                 TapHandler {
                     onTapped: console.log("Open Tasks")
                 }
             }
 
+            // Кнопка "Привычки" (Habits) - Активная
             ColumnLayout {
                 spacing: 4
-
                 Label {
-                    text: "✓"
+                    text: "●" // Или другая иконка активной вкладки
                     font.pixelSize: 22
-                    color: "#ffffff"
+                    color: "#4ecdc4" // Выделенный цвет
                     Layout.alignment: Qt.AlignHCenter
                 }
-
                 Label {
                     text: qsTr("Привычки")
                     font.pixelSize: 12
-                    color: "#ffffff"
+                    color: "#4ecdc4"
                 }
-
                 TapHandler {
-                    onTapped: console.log("Open Habits")
+                    onTapped: console.log("Open Habits (Current)")
                 }
             }
 
+            // Кнопка "Настройки"
             ColumnLayout {
                 spacing: 4
-
                 Text {
                     text: "⚙"
                     font.pixelSize: 22
                     color: "#888888"
                     Layout.alignment: Qt.AlignHCenter
                 }
-
                 Text {
                     text: qsTr("Настройки")
                     font.pixelSize: 12
                     color: "#888888"
                 }
-
                 TapHandler {
                     onTapped: console.log("Open Preference")
                 }
