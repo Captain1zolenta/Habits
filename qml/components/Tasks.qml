@@ -1,6 +1,7 @@
 import QtQuick 2.15
 import QtQuick.Controls
 import QtQuick.Layouts
+import Habits
 
 
 // Секция "Задачи"
@@ -21,6 +22,62 @@ ColumnLayout {
         }
 
         Item { Layout.fillWidth: true }
+
+
+
+        ToolButton {
+            id: refreshBtn
+
+            icon.name: "view-refresh"
+            icon.width: 20
+            icon.height: 20
+            icon.color: "#cccccc"
+
+            // Компактный размер
+            implicitWidth: 32
+            implicitHeight: 32
+
+            // Круглый фон
+            background: Rectangle {
+                color: refreshBtn.hovered ? "#444444" :
+                       refreshBtn.pressed ? "#222222" : "transparent"
+                radius: 16
+            }
+
+            // Подсказка при наведении
+            ToolTip.visible: hovered
+            ToolTip.text: "Обновить список"
+            ToolTip.delay: 500
+
+            onClicked: loadData()
+        }
+
+        ToolButton {
+            id: listAdd
+
+            icon.name: "list-add"
+            icon.width: 20
+            icon.height: 20
+            icon.color: "#cccccc"
+
+            // Компактный размер
+            implicitWidth: 32
+            implicitHeight: 32
+
+            // Круглый фон
+            background: Rectangle {
+                color: listAdd.hovered ? "#444444" :
+                       listAdd.pressed ? "#222222" : "transparent"
+                radius: 16
+            }
+
+            // Подсказка при наведении
+            ToolTip.visible: hovered
+            ToolTip.text: "Добавить задачу"
+            ToolTip.delay: 500
+
+            onClicked: taskDialog.open()
+        }
 
         Text {
             text: "▼"
@@ -177,11 +234,18 @@ ColumnLayout {
             id: tasksListView
             Layout.fillHeight: true  // Занять всё доступное свободное место
             Layout.fillWidth: true
-            model: TaskModel {}
-            delegate: TaskDelegate {}
+            model: ListModel {id: listModel}
+            delegate: TaskDelegate {db: dbManager}
             clip: true
         }
 
+    }
+
+    AddTaskDialog {
+        id: taskDialog
+        x: Math.round((parent.width - width) / 2)
+        y: Math.round((parent.height - height) / 2)
+        db: dbManager
     }
 
     /*Text {
@@ -190,4 +254,32 @@ ColumnLayout {
         font.pixelSize: 14
         Layout.topMargin: 5
     }*/
+
+    /*
+
+    function loadData() {
+        listModel.clear()
+        let tasks = dbManager.getAllTasks()
+        for (let r of tasks) listModel.append(r)
+    }
+    */
+
+    function loadData() {
+        listModel.clear()
+        let tasks = dbManager.getAllTasks()
+        console.log("📦 Loaded tasks count:", tasks.length)
+        for (let i = 0; i < tasks.length; i++) {
+            let r = tasks[i]
+            console.log("📋 Task[" + i + "] keys:", Object.keys(r))
+            console.log("   id:", r.id, "| nameTask:", r.nameTask, "| dateTask:", r.dateTask) // dateTask, не date
+            listModel.append(r)
+        }
+    }
+
+    Component.onCompleted: loadData()
+    // Автообновление при изменении данных извне
+    Connections {
+        target: dbManager
+        function onDataChanged() { loadData() }
+    }
 }
