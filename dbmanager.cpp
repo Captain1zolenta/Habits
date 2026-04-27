@@ -47,7 +47,9 @@ bool DbManager::insertTask(const QString nameTask, const QString describeTask, c
     query.bindValue(":nameTask", nameTask);
     query.bindValue(":describeTask", describeTask);
     query.bindValue(":dateTask", dateTask);
+
     bool openDbResult = query.exec();
+
     if (openDbResult) emit dataChanged();
     else qWarning() << "Insert error:" << query.lastError().text();
     return openDbResult;
@@ -58,10 +60,12 @@ bool DbManager::deleteTask(int id)
     QSqlQuery query(m_db);
     query.prepare("DELETE FROM tasks WHERE id = :id");
     query.bindValue(":id", id);
-    bool ok = query.exec();
-    if (ok) emit dataChanged();
+
+    bool openDbResult = query.exec();
+
+    if (openDbResult) emit dataChanged();
     else qWarning() << "Delete error:" << query.lastError().text();
-    return ok;
+    return openDbResult;
 }
 
 bool DbManager::createTableTasks()
@@ -76,6 +80,22 @@ bool DbManager::createTableTasks()
         )
     )");
     if (!openDbResult) qWarning() << "Create table error:" << query.lastError().text();
+    return openDbResult;
+}
+
+bool DbManager::updateTask(int id, const QString nameTask, const QString describeTask, const QString dateTask)
+{
+    QSqlQuery query(m_db);
+    query.prepare("UPDATE tasks SET nameTask = :nameTask, describeTask = :describeTask, dateTask = :dateTask WHERE id = :id");
+    query.bindValue(":nameTask", nameTask);
+    query.bindValue(":describeTask", describeTask);
+    query.bindValue(":dateTask", dateTask);
+    query.bindValue(":id", id);
+
+    bool openDbResult = query.exec();
+
+    if (openDbResult) emit dataChanged();
+    else qWarning() << "Delete error:" << query.lastError().text();
     return openDbResult;
 }
 

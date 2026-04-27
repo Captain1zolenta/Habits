@@ -22,9 +22,10 @@ public:
     bool open(const QString &dbPath);
 
     Q_INVOKABLE QVariantList getAllTasks();
-    Q_INVOKABLE bool insertTask(const QString nameTask, const QString describeTask = nullptr, const QString date = nullptr);
+    Q_INVOKABLE bool insertTask(const QString nameTask, const QString describeTask = nullptr, const QString dateTask = nullptr);
     Q_INVOKABLE bool deleteTask(int id);
     Q_INVOKABLE bool createTableTasks();
+    Q_INVOKABLE bool updateTask(int id, const QString nameTask, const QString describeTask = nullptr, const QString dateTask = nullptr);
 
 signals:
     void connectionChanged(bool connected);

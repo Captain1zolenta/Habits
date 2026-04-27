@@ -1,6 +1,7 @@
 import QtQuick 2.15
 import QtQuick.Layouts
 import QtQuick.Controls
+import Habits
 
 ItemDelegate {
     id: root
@@ -105,7 +106,7 @@ ItemDelegate {
 
                     MouseArea {
                         anchors.fill: parent
-                        onClicked: console.log("Edit:")
+                        onClicked: editTaskDialog.open()
                     }
                 }
 
@@ -129,5 +130,18 @@ ItemDelegate {
                 }
             }
         }
+    }
+
+    EditTaskDialog {
+        id: editTaskDialog
+
+        idTask: model.id
+        nameTask: model.nameTask
+        dateTask: model.dateTask
+        describeTask: model.describeTask
+
+        x: Math.round((parent.width - width) / 2)
+        y: Math.round((parent.height - height) / 2)
+        db: dbManager
     }
 }

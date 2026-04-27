@@ -26,6 +26,7 @@ qt_add_qml_module(appHabits
         qml/components/TaskModel.qml
         qml/components/HabitsView.qml
         qml/dialogs/AddTaskDialog.qml
+        qml/dialogs/EditTaskDialog.qml
     SOURCES
         dbmanager.h
         dbmanager.cpp
