@@ -19,17 +19,42 @@ Dialog {
         if (nameTask.text) {
             addTask()
         }
+
+        nameTask.text = ""
+        describeTask.text = ""
+        dateTask.text = ""
+        taskDialog.close()
     }
 
-    onRejected: taskDialog.close()
+    onRejected: {
+        nameTask.text = ""
+        describeTask.text = ""
+        dateTask.text = ""
+        taskDialog.close()
+    }
 
     ColumnLayout {
         anchors.fill: parent;
         spacing: 10;
 
-        TextField { id: nameTask; placeholderText: "Название"; Layout.fillWidth: true }
-        TextField { id: describeTask; placeholderText: "Описание"; Layout.fillWidth: true }
-        TextField { id: dateTask; placeholderText: "Дата"; Layout.fillWidth: true }
+        TextField {
+            id: nameTask;
+            placeholderText: "Название";
+            Layout.fillWidth: true
+            maximumLength: 250
+        }
+        TextField {
+            id: describeTask;
+            placeholderText: "Описание";
+            Layout.fillWidth: true
+            maximumLength: 250
+        }
+        TextField {
+            id: dateTask;
+            placeholderText: "Дата";
+            Layout.fillWidth: true
+            inputMask: "99:99:9999"
+        }
     }
 
     function addTask() {

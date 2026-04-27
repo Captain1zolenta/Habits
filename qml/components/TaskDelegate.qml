@@ -34,7 +34,7 @@ ItemDelegate {
 
                 Label {
                     text: model.nameTask
-                    font.pixelSize: 16
+                    font.pixelSize: 30
                     font.bold: true
                     font.strikeout: root.complete
                     color: "#4ecdc4"
@@ -52,10 +52,11 @@ ItemDelegate {
                         */
                         model.dateTask
                     }
-                    font.pixelSize: 12
+                    font.pixelSize: 25
                     font.strikeout: root.complete
                     color: "#888888"
                     Layout.fillWidth: true
+                    visible: model.dateTask === "::" ? false : true
                 }
             }
 
@@ -75,11 +76,12 @@ ItemDelegate {
 
             Label {
                 text: model.describeTask
-                font.pixelSize: 16
+                font.pixelSize: 20
                 font.bold: true
                 font.strikeout: root.complete
                 color: "#aeaeae"
                 Layout.fillWidth: true
+                visible: model.describeTask ? true : false
             }
 
             // Кнопки управления

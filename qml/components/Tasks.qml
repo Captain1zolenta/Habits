@@ -14,7 +14,7 @@ ColumnLayout {
     RowLayout {
         Layout.fillWidth: true
 
-        Text {
+        Label {
             text: "Задачи"
             font.pixelSize: 22
             font.bold: true
@@ -79,7 +79,7 @@ ColumnLayout {
             onClicked: taskDialog.open()
         }
 
-        Text {
+        Label {
             text: "▼"
             font.pixelSize: 12
             color: "#888888"
@@ -92,77 +92,6 @@ ColumnLayout {
             }
         }
     }
-
-    /*// Табы
-    RowLayout {
-        Layout.fillWidth: true
-        spacing: 8
-
-        Rectangle {
-            implicitWidth: 100
-            implicitHeight: 36
-            radius: 18
-            color: "#333333"
-
-            Text {
-                text: "Сегодня"
-                anchors.centerIn: parent
-                color: "#ffffff"
-                font.pixelSize: 13
-            }
-        }
-
-        Rectangle {
-            implicitWidth: 100
-            implicitHeight: 36
-            radius: 18
-            color: "transparent"
-
-            Text {
-                text: "Завтра"
-                anchors.centerIn: parent
-                color: "#888888"
-                font.pixelSize: 13
-            }
-        }
-
-        Rectangle {
-            implicitWidth: 120
-            implicitHeight: 36
-            radius: 18
-            color: "transparent"
-
-            Text {
-                text: "Без срока"
-                anchors.centerIn: parent
-                color: "#888888"
-                font.pixelSize: 13
-            }
-        }
-
-        Item { Layout.fillWidth: true }
-
-        Text {
-            text: "🔍"
-            font.pixelSize: 18
-            color: "#888888"
-            anchors.verticalCenter: parent.verticalCenter
-        }
-
-        Text {
-            text: "⇅"
-            font.pixelSize: 18
-            color: "#888888"
-            anchors.verticalCenter: parent.verticalCenter
-        }
-
-        Text {
-            text: "📅"
-            font.pixelSize: 18
-            color: "#888888"
-            anchors.verticalCenter: parent.verticalCenter
-        }
-    }*/
 
     TabBar {
         id: bar
@@ -179,6 +108,26 @@ ColumnLayout {
         }
 
         TabButton {
+            text: qsTr("Все")
+
+            background: Rectangle {
+                implicitWidth: 100
+                implicitHeight: 36
+                color: "#333333"
+            }
+        }
+
+        TabButton {
+            text: qsTr("Прошлые")
+
+            background: Rectangle {
+                implicitWidth: 100
+                implicitHeight: 36
+                color: "#333333"
+            }
+        }
+
+        TabButton {
             text: qsTr("Сегодня")
 
             background: Rectangle {
@@ -188,7 +137,7 @@ ColumnLayout {
             }
         }
         TabButton {
-            text: qsTr("Завтра")
+            text: qsTr("Будущие")
 
             background: Rectangle {
                 implicitWidth: 100
@@ -213,32 +162,54 @@ ColumnLayout {
         currentIndex: bar.currentIndex
         visible: true
 
-        // Опционально: анимация появления
+        // анимация появления
         opacity: visible ? 1.0 : 0.0
         Behavior on opacity { NumberAnimation { duration: 200 } }
 
-        /*Rectangle {
-            id: homeTab
-            color: "red"
-        }
-        Rectangle {
-            id: discoverTab
-            color: "blue"
-        }
-        Rectangle {
-            id: activityTab
-            color: "green"
-        }*/
-
         ListView {
-            id: tasksListView
-            Layout.fillHeight: true  // Занять всё доступное свободное место
+            id: allTasksListView
+            Layout.fillHeight: true
             Layout.fillWidth: true
-            model: ListModel {id: listModel}
+            model: ListModel {id: allTasksListModel}
             delegate: TaskDelegate {db: dbManager}
             clip: true
         }
 
+        ListView {
+            id: overdueTasksListView
+            Layout.fillHeight: true
+            Layout.fillWidth: true
+            model: ListModel {id: overdueTasksListModel}
+            delegate: TaskDelegate {db: dbManager}
+            clip: true
+        }
+
+        ListView {
+            id: todayTasksListView
+            Layout.fillHeight: true
+            Layout.fillWidth: true
+            model: ListModel {id: todayTasksListModel}
+            delegate: TaskDelegate {db: dbManager}
+            clip: true
+        }
+
+        ListView {
+            id: futureTasksListView
+            Layout.fillHeight: true
+            Layout.fillWidth: true
+            model: ListModel {id: futureTasksListModel}
+            delegate: TaskDelegate {db: dbManager}
+            clip: true
+        }
+
+        ListView {
+            id: noTimeTasksListView
+            Layout.fillHeight: true
+            Layout.fillWidth: true
+            model: ListModel {id: noTimeTasksListModel}
+            delegate: TaskDelegate {db: dbManager}
+            clip: true
+        }
     }
 
     AddTaskDialog {
@@ -248,11 +219,12 @@ ColumnLayout {
         db: dbManager
     }
 
-    /*Text {
+    /*Label {
         text: "Нет задач"
         color: "#666666"
         font.pixelSize: 14
         Layout.topMargin: 5
+        visible: allTasksListView ? false : true
     }*/
 
     /*
@@ -265,15 +237,132 @@ ColumnLayout {
     */
 
     function loadData() {
-        listModel.clear()
+        allTasksListModel.clear()
+        noTimeTasksListModel.clear()
+        todayTasksListModel.clear()
+        futureTasksListModel.clear()
+        overdueTasksListModel.clear()
+
         let tasks = dbManager.getAllTasks()
         console.log("📦 Loaded tasks count:", tasks.length)
         for (let i = 0; i < tasks.length; i++) {
             let r = tasks[i]
             console.log("📋 Task[" + i + "] keys:", Object.keys(r))
-            console.log("   id:", r.id, "| nameTask:", r.nameTask, "| dateTask:", r.dateTask) // dateTask, не date
-            listModel.append(r)
+            console.log("   id:", r.id, "| nameTask:", r.nameTask, "| describeTask:", r.describeTask, "| dateTask:", r.dateTask)
+
+            allTasksListModel.append(r)
+
+            if (r.dateTask === "::") {
+                noTimeTasksListModel.append(r)
+            } else if (compareСurrentDate(r.dateTask)){
+                todayTasksListModel.append(r)
+            } else if (compareFutureDate(r.dateTask)){
+                futureTasksListModel.append(r)
+            } else {
+                overdueTasksListModel.append(r)
+            }
         }
+    }
+
+    function compareСurrentDate(dateStr) {
+        // 1. Разбиваем строку по символу ':'
+        var parts = dateStr.split(':');
+        if (parts.length !== 3) return "Ошибка формата: ожидается ДД:ММ:ГГГГ";
+
+        // 2. Преобразуем части в числа
+        var day   = parseInt(parts[0], 10);
+        var month = parseInt(parts[1], 10) - 1; // В JS месяцы нумеруются с 0
+        var year  = parseInt(parts[2], 10);
+
+        // 3. Создаём объект Date
+        var inputDate = new Date(year, month, day);
+
+        // 4. Проверяем, не изменил ли Date числа (защита от 32.01.2023 и т.п.)
+        if (inputDate.getFullYear() !== year ||
+            inputDate.getMonth() !== month ||
+            inputDate.getDate() !== day) {
+            return "Некорректная дата";
+        }
+
+        // 5. Получаем "сегодня" без времени
+        var today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        // 6. Сравниваем
+        var inputTime = inputDate.getTime();
+        var todayTime = today.getTime();
+
+        console.log("Полученная дата:", inputTime, "Сегодня:", todayTime)
+
+        if (inputTime === todayTime) return true
+
+        return false
+    }
+
+    function compareFutureDate(dateStr) {
+        // 1. Разбиваем строку по символу ':'
+        var parts = dateStr.split(':');
+        if (parts.length !== 3) return "Ошибка формата: ожидается ДД:ММ:ГГГГ";
+
+        // 2. Преобразуем части в числа
+        var day   = parseInt(parts[0], 10);
+        var month = parseInt(parts[1], 10) - 1; // В JS месяцы нумеруются с 0
+        var year  = parseInt(parts[2], 10);
+
+        // 3. Создаём объект Date
+        var inputDate = new Date(year, month, day);
+
+        // 4. Проверяем, не изменил ли Date числа (защита от 32.01.2023 и т.п.)
+        if (inputDate.getFullYear() !== year ||
+            inputDate.getMonth() !== month ||
+            inputDate.getDate() !== day) {
+            return "Некорректная дата";
+        }
+
+        // 5. Получаем "сегодня" без времени
+        var today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        // 6. Сравниваем
+        var inputTime = inputDate.getTime();
+        var todayTime = today.getTime();
+
+        if (inputTime > todayTime) return true
+
+        return false
+    }
+
+    function compareLastDate(dateStr) {
+        // 1. Разбиваем строку по символу ':'
+        var parts = dateStr.split(':');
+        if (parts.length !== 3) return "Ошибка формата: ожидается ДД:ММ:ГГГГ";
+
+        // 2. Преобразуем части в числа
+        var day   = parseInt(parts[0], 10);
+        var month = parseInt(parts[1], 10) - 1; // В JS месяцы нумеруются с 0
+        var year  = parseInt(parts[2], 10);
+
+        // 3. Создаём объект Date
+        var inputDate = new Date(year, month, day);
+
+        // 4. Проверяем, не изменил ли Date числа (защита от 32.01.2023 и т.п.)
+        if (inputDate.getFullYear() !== year ||
+            inputDate.getMonth() !== month ||
+            inputDate.getDate() !== day) {
+            return "Некорректная дата";
+        }
+
+        // 5. Получаем "сегодня" без времени
+        var today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        // 6. Сравниваем
+        var inputTime = inputDate.getTime();
+        var todayTime = today.getTime();
+
+        if (inputTime < todayTime) return true
+
+        return false
     }
 
     Component.onCompleted: loadData()
