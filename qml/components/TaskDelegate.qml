@@ -1,6 +1,7 @@
 import QtQuick 2.15
 import QtQuick.Layouts
 import QtQuick.Controls
+import Habits
 
 ItemDelegate {
     id: root
@@ -34,7 +35,7 @@ ItemDelegate {
 
                 Label {
                     text: model.nameTask
-                    font.pixelSize: 16
+                    font.pixelSize: 30
                     font.bold: true
                     font.strikeout: root.complete
                     color: "#4ecdc4"
@@ -52,10 +53,11 @@ ItemDelegate {
                         */
                         model.dateTask
                     }
-                    font.pixelSize: 12
+                    font.pixelSize: 25
                     font.strikeout: root.complete
                     color: "#888888"
                     Layout.fillWidth: true
+                    visible: model.dateTask === "::" ? false : true
                 }
             }
 
@@ -75,11 +77,12 @@ ItemDelegate {
 
             Label {
                 text: model.describeTask
-                font.pixelSize: 16
+                font.pixelSize: 20
                 font.bold: true
                 font.strikeout: root.complete
                 color: "#aeaeae"
                 Layout.fillWidth: true
+                visible: model.describeTask ? true : false
             }
 
             // Кнопки управления
@@ -103,7 +106,7 @@ ItemDelegate {
 
                     MouseArea {
                         anchors.fill: parent
-                        onClicked: console.log("Edit:")
+                        onClicked: editTaskDialog.open()
                     }
                 }
 
@@ -127,5 +130,18 @@ ItemDelegate {
                 }
             }
         }
+    }
+
+    EditTaskDialog {
+        id: editTaskDialog
+
+        idTask: model.id
+        nameTask: model.nameTask
+        dateTask: model.dateTask
+        describeTask: model.describeTask
+
+        x: Math.round((parent.width - width) / 2)
+        y: Math.round((parent.height - height) / 2)
+        db: dbManager
     }
 }

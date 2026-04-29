@@ -1,4 +1,4 @@
-#include "habitmodel.h"
+#include "src/habitmodel.h"
 #include <QUuid>
 
 HabitModel::HabitModel(QObject *parent)

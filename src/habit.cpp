@@ -1,4 +1,4 @@
-#include "habit.h"
+#include "src/habit.h"
 #include <QDateTime>
 #include <algorithm>
 

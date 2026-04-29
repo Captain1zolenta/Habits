@@ -10,24 +10,33 @@ qt_standard_project_setup(REQUIRES 6.8)
 
 qt_add_executable(appHabits
     main.cpp
-    src/habit.cpp
-    src/habitmodel.cpp
+
 )
 
 qt_add_qml_module(appHabits
     URI Habits
     VERSION 1.0
     QML_FILES
-        Main.qml
+    Main.qml
         qml/MainView.qml
         qml/components/HabitCard.qml
+        qml/dialogs/AddEditDialog.qml
+        qml/components/TaskDelegate.qml
+        qml/components/Tasks.qml
+        qml/components/TaskModel.qml
         qml/components/HabitsView.qml
         qml/dialogs/AddTaskDialog.qml
+        qml/dialogs/EditTaskDialog.qml
     SOURCES
         dbmanager.h
         dbmanager.cpp
+        src/habit.cpp
+        src/habit.h
+        src/habitmodel.cpp
+        src/habitmodel.h
     RESOURCES
         qtquickcontrols2.conf
+        QML_FILES qml/dialogs/EditTaskDialog.qml
 
 )
 

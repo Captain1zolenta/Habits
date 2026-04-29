@@ -6,31 +6,35 @@ import QtQuick.Layouts
 import QtQuick.Window
 
 Dialog {
-    id: taskDialog
-    title: "Добавление новой задачи"
+    id: editTaskDialog
+    title: "Редактирование задачи"
     modal: true
     standardButtons: DialogButtonBox.Ok | DialogButtonBox.Cancel
 
 
     property var onConfirmCallback: null
     required property var db
+    required property int idTask
+    required property string nameTask
+    required property string dateTask
+    required property string describeTask
 
     onAccepted: {
-        if (nameTask.text) {
-            addTask()
-        }
 
-        nameTask.text = ""
-        describeTask.text = ""
-        dateTask.text = ""
-        taskDialog.close()
+        editTask()
+
+
+        nameIdTask.text = ""
+        describeIdTask.text = ""
+        dateIdTask.text = ""
+        editTaskDialog.close()
     }
 
     onRejected: {
-        nameTask.text = ""
-        describeTask.text = ""
-        dateTask.text = ""
-        taskDialog.close()
+        nameIdTask.text = ""
+        describeIdTask.text = ""
+        dateIdTask.text = ""
+        editTaskDialog.close()
     }
 
     ColumnLayout {
@@ -38,27 +42,30 @@ Dialog {
         spacing: 10;
 
         TextField {
-            id: nameTask;
+            id: nameIdTask;
             placeholderText: "Название";
             Layout.fillWidth: true
             maximumLength: 250
+            text: nameTask
         }
         TextField {
-            id: describeTask;
+            id: describeIdTask;
             placeholderText: "Описание";
             Layout.fillWidth: true
             maximumLength: 250
+            text: describeTask
         }
         TextField {
-            id: dateTask;
+            id: dateIdTask;
             placeholderText: "Дата";
             Layout.fillWidth: true
             inputMask: "99:99:9999"
+            text: dateTask
         }
     }
 
-    function addTask() {
-        if (nameTask.text.trim() === "") return
-        db.insertTask(nameTask.text, describeTask.text, dateTask.text)
+    function editTask() {
+        if (nameIdTask.text.trim() === "") return
+        db.updateTask(idTask, nameIdTask.text, describeIdTask.text, dateIdTask.text)
     }
 }

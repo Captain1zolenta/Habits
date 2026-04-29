@@ -7,6 +7,7 @@
 #include <QSqlError>
 #include <QVariantList>
 #include <QVariantMap>
+#include <QDate>
 
 class DbManager : public QObject {
 
@@ -22,15 +23,26 @@ public:
     bool open(const QString &dbPath);
 
     Q_INVOKABLE QVariantList getAllTasks();
-    Q_INVOKABLE bool insertTask(const QString nameTask, const QString describeTask = nullptr, const QString date = nullptr);
+    Q_INVOKABLE bool insertTask(const QString nameTask, const QString describeTask = nullptr, const QString dateTask = nullptr);
     Q_INVOKABLE bool deleteTask(int id);
     Q_INVOKABLE bool createTableTasks();
+    Q_INVOKABLE bool updateTask(int id, const QString nameTask, const QString describeTask = nullptr, const QString dateTask = nullptr);
+
+    Q_INVOKABLE QVariantList getAllHabits();
+    Q_INVOKABLE bool createTableHabits();
+    Q_INVOKABLE bool insertHabit(const QString name, const QString description);
+    Q_INVOKABLE bool updateHabit(int id, const QString name, const QString description);
+    Q_INVOKABLE bool deleteHabit(int id);
 
 signals:
     void connectionChanged(bool connected);
     void dataChanged();
+    void habitsDataChanged();
 
 private:
     QSqlDatabase m_db;
+
+    //Помощник для серий
+    int calculateStreak(int habitId, bool bacward);
 };
 #endif // DBMANAGER_H
