@@ -5,6 +5,7 @@
 #include <QAbstractListModel>
 #include <QList>
 #include <QDate>
+#include <QQmlEngine>
 #include "habit.h"
 
 class DbManager;
@@ -12,6 +13,7 @@ class DbManager;
 class HabitModel : public QAbstractListModel
 {
     Q_OBJECT
+    QML_ELEMENT
 
 public:
     enum HabitRoles {
@@ -36,7 +38,7 @@ public:
     Q_INVOKABLE void removeHabit(int index);
     Q_INVOKABLE void updateHabit(int index, const QString& name, const QString& description);
     Q_INVOKABLE void toggleDayCompletion(int index, const QDate& date);
-    Q_INVOKABLE int getHabitId(int index) const;
+    Q_INVOKABLE QString getHabitId(int index) const;
 
 signals:
     void habitAdded(int index);

@@ -21,11 +21,28 @@ void HabitModel::loadHabitsFromDb()
     qDeleteAll(m_habits);
     m_habits.clear();
 
-    QList<Habit*> habitsFromDb = m_dbManager->getAllHabits();
+    QVariantList habitsFromDb = m_dbManager->getAllHabits();
 
-    for (Habit *h : habitsFromDb) {
-        calculateStreaks(h);
-        m_habits.append(h);
+    for (const QVariant &h : habitsFromDb) {
+        QVariantMap habitMap = h.toMap();
+        Habit *habit = new Habit(this);
+        habit->setId(QString::number(habitMap["id"].toInt()));
+        habit->setName(habitMap["name"].toString());
+        habit->setDescription(habitMap["description"].toString());
+
+        // Загружаем даты выполнения для этой привычки
+        QList<QDate> completedDates;
+        QDate today = QDate::currentDate();
+        for (int i = 0; i < 365; ++i) {
+            QDate date = today.addDays(-i);
+            if (m_dbManager->isHabitCompleted(habitMap["id"].toInt(), date.toString(Qt::ISODate))) {
+                completedDates.append(date);
+            }
+        }
+        habit->setCompletedDates(completedDates);
+
+        calculateStreaks(habit);
+        m_habits.append(habit);
     }
     endResetModel();
 }
@@ -88,8 +105,18 @@ void HabitModel::addHabit(const QString &name, const QString &description)
 {
     if (!m_dbManager) return;
 
-    Habit *newHabit = m_dbManager->addHabitToDb(name, description);
-    if (!newHabit) return;
+    if (!m_dbManager->insertHabit(name, description)) return;
+
+    // Получаем ID только что добавленной привычки
+    QVariantList habits = m_dbManager->getAllHabits();
+    if (habits.isEmpty()) return;
+
+    QVariantMap habitMap = habits.first().toMap();
+
+    Habit *newHabit = new Habit(this);
+    newHabit->setId(QString::number(habitMap["id"].toInt()));
+    newHabit->setName(name);
+    newHabit->setDescription(description);
 
     calculateStreaks(newHabit);
 
@@ -105,8 +132,9 @@ void HabitModel::removeHabit(int index)
     if (index < 0 || index >= m_habits.count() || !m_dbManager) return;
 
     Habit *habit = m_habits.at(index);
+    int habitId = habit->id().toInt();
 
-    m_dbManager->removeHabitFromDb(habit->id());
+    m_dbManager->deleteHabit(habitId);
 
     beginRemoveRows(QModelIndex(), index, index);
     m_habits.removeAt(index);
@@ -124,7 +152,8 @@ void HabitModel::updateHabit(int index, const QString &name, const QString &desc
     habit->setName(name);
     habit->setDescription(description);
 
-    m_dbManager->updateHabitInDb(habit);
+    int habitId = habit->id().toInt();
+    m_dbManager->updateHabit(habitId, name, description);
 
     emit dataChanged(createIndex(index, 0), createIndex(index, 0), {NameRole, DescriptionRole});
     emit habitUpdated(index);
@@ -135,14 +164,20 @@ void HabitModel::toggleDayCompletion(int index, const QDate &date)
     if (index < 0 || index >= m_habits.count() || !m_dbManager) return;
 
     Habit *habit = m_habits.at(index);
+    int habitId = habit->id().toInt();
+
     bool wasCompleted = habit->completedDates().contains(date);
 
     if (wasCompleted) {
-        habit->removeCompletedDate(date);
-        m_dbManager->removeHabitCompletion(habit->id(), date);
+        QList<QDate> dates = habit->completedDates();
+        dates.removeAll(date);
+        habit->setCompletedDates(dates);
+        m_dbManager->toggleHabitCompletion(habitId, date.toString(Qt::ISODate));
     } else {
-        habit->addCompletedDate(date);
-        m_dbManager->addHabitCompletion(habit->id(), date);
+        QList<QDate> dates = habit->completedDates();
+        dates.append(date);
+        habit->setCompletedDates(dates);
+        m_dbManager->toggleHabitCompletion(habitId, date.toString(Qt::ISODate));
     }
 
     calculateStreaks(habit);
@@ -151,9 +186,9 @@ void HabitModel::toggleDayCompletion(int index, const QDate &date)
                      {CurrentStreakRole, BestStreakRole, CompletedDaysListRole, CompletedDatesRole});
 }
 
-int HabitModel::getHabitId(int index) const
+QString HabitModel::getHabitId(int index) const
 {
-    if (index < 0 || index >= m_habits.count()) return -1;
+    if (index < 0 || index >= m_habits.count()) return QString();
     return m_habits.at(index)->id();
 }
 
@@ -210,4 +245,30 @@ void HabitModel::calculateStreaks(Habit *habit)
 
     habit->setCurrentStreak(currentStreak);
     habit->setBestStreak(bestStreak);
+}
+
+bool HabitModel::setData(const QModelIndex &index, const QVariant &value, int role)
+{
+    if (!index.isValid() || index.row() >= m_habits.count())
+        return false;
+
+    Habit *habit = m_habits.at(index.row());
+
+    switch (role) {
+    case NameRole:
+        habit->setName(value.toString());
+        break;
+    case DescriptionRole:
+        habit->setDescription(value.toString());
+        break;
+    case CompletedDatesRole:
+        habit->setCompletedDates(value.value<QList<QDate>>());
+        calculateStreaks(habit);
+        break;
+    default:
+        return false;
+    }
+
+    emit dataChanged(index, index, {role});
+    return true;
 }
