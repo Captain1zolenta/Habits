@@ -7,6 +7,21 @@ Rectangle {
     id: root
     color: "#0a0a0a"
 
+    // Создаем экземпляр модели привычек
+    HabitModel {
+        id: habitModel
+    }
+
+    // Диалог редактирования/добавления привычки
+    EditHabitDialog {
+        id: editHabitDialog
+    }
+
+    // Функция для открытия диалога редактирования
+    function openEditHabitDialog(index, name, description) {
+        editHabitDialog.openForEdit(index, habitModel, name, description);
+    }
+
     // Заголовок
     Text {
         id: headerTitle
@@ -138,10 +153,7 @@ Rectangle {
                     TapHandler {
                         onTapped: {
                             console.log("Add new habit clicked")
-                            // Добавляем тестовую привычку при клике
-                            if (root.habitModel) {
-                                root.habitModel.addHabit("Новая цель", "Описание цели");
-                            }
+                            editHabitDialog.openForAdd(habitModel);
                         }
                     }
                 }

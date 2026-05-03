@@ -20,13 +20,14 @@ qt_add_qml_module(appHabits
     Main.qml
         qml/MainView.qml
         qml/components/HabitCard.qml
-        qml/dialogs/AddEditDialog.qml
+        qml/dialogs/AddHabitDialog.qml
         qml/components/TaskDelegate.qml
         qml/components/Tasks.qml
         qml/components/TaskModel.qml
         qml/components/HabitsView.qml
         qml/dialogs/AddTaskDialog.qml
         qml/dialogs/EditTaskDialog.qml
+        qml/dialogs/EditHabitDialog.qml
     SOURCES
         dbmanager.h
         dbmanager.cpp
@@ -35,8 +36,7 @@ qt_add_qml_module(appHabits
         src/habitmodel.cpp
         src/habitmodel.h
     RESOURCES
-        qtquickcontrols2.conf
-        QML_FILES qml/dialogs/EditTaskDialog.qml
+        qtquickcontrols2.conf        
 
 )
 

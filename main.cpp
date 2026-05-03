@@ -6,6 +6,7 @@
 #include <QFileInfo>
 #include "dbmanager.h"
 #include <QQmlContext>
+#include "src/habitmodel.h"
 
 int main(int argc, char *argv[])
 {
@@ -17,10 +18,14 @@ int main(int argc, char *argv[])
     DbManager dbManager;
     dbManager.open(dbPath);
     dbManager.createTableTasks();
+    dbManager.createTableHabits();
+
+    HabitModel habitModel(&dbManager);
 
     QQmlApplicationEngine engine;
 
     engine.rootContext()->setContextProperty("dbManager", &dbManager);
+    engine.rootContext()->setContextProperty("habitModel", &habitModel);
 
     QObject::connect(
         &engine,

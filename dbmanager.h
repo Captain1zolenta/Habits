@@ -33,6 +33,10 @@ public:
     Q_INVOKABLE bool insertHabit(const QString name, const QString description);
     Q_INVOKABLE bool updateHabit(int id, const QString name, const QString description);
     Q_INVOKABLE bool deleteHabit(int id);
+    Q_INVOKABLE bool toggleHabitCompletion(int habitId, const QString &dateStr);
+    Q_INVOKABLE bool isHabitCompleted(int habitId, const QString &dateStr);
+    Q_INVOKABLE QVariantMap getHabitStats(int habitId);
+
 
 signals:
     void connectionChanged(bool connected);
