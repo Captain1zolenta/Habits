@@ -5,15 +5,13 @@
 #include <QAbstractListModel>
 #include <QList>
 #include <QDate>
-#include <QQmlEngine>
 #include "habit.h"
 
 class DbManager;
 
 class HabitModel : public QAbstractListModel
 {
-    Q_OBJECT
-    QML_ELEMENT
+    Q_OBJECT    
 
 public:
     enum HabitRoles {

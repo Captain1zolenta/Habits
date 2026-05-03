@@ -1,4 +1,4 @@
-import QtQuick
+import QtQuick 2.15
 import QtQuick.Layouts
 import QtQuick.Controls
 
@@ -20,7 +20,11 @@ Rectangle {
     // Список дат завершений (приходит из модели как QList<QDate>)
     property var completedDates: []
     property int habitIndex: -1
+    // Ссылка на модель нужна только для переключения дней (toggleDayCompletion)
     property var habitModel: null
+
+    // --- СИГНАЛ ДЛЯ СВЯЗИ С РОДИТЕЛЕМ ---
+    signal editRequested(int index, string name, string description)
 
     ColumnLayout {
         id: contentColumn
@@ -172,10 +176,10 @@ Rectangle {
                     font.pixelSize: 12
                     horizontalAlignment: Text.AlignHCenter
                 }
+
                 onClicked: {
-                    if (habitCard.habitIndex >= 0 && habitCard.habitModel) {
-                        root.openEditHabitDialog(habitCard.habitIndex, habitCard.habitName, habitCard.description);
-                    }
+                    // Вызываем сигнал, который перехватит MainView
+                    editRequested(habitIndex, habitName, description);
                 }
             }
 

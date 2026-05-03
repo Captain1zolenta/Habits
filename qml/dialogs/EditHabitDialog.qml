@@ -1,64 +1,72 @@
+pragma ComponentBehavior: Bound
+
 import QtQuick 2.15
-import QtQuick.Controls 2.15
-import QtQuick.Layouts 2.15
+import QtQuick.Controls
+import QtQuick.Layouts
+import QtQuick.Window
 
 Dialog {
     id: editHabitDialog
-    title: editingMode ? "Редактировать привычку" : "Новая привычка"
+    title: "Редактировать привычку"
     modal: true
     standardButtons: Dialog.Save | Dialog.Cancel
     anchors.centerIn: parent
 
-    property bool editingMode: false
+    // Обязательное свойство: модель данных
+    required property var habitModel
     property int habitIndex: -1
-    property var habitModel: null
 
-    // Данные для редактирования/создания
-    property string habitName: ""
-    property string habitDescription: ""
+    onAccepted: {
+        if (nameField.text.trim() !== "") {
+            habitModel.updateHabit(habitIndex, nameField.text.trim(), descField.text.trim());
+        }
+        close();
+    }
 
-    signal saveClicked(string name, string description)
-    signal cancelClicked()
+    onRejected: {
+        close();
+    }
 
     ColumnLayout {
-        width: 300
+        anchors.fill: parent
         spacing: 15
 
         Label {
             text: "Название привычки:"
             font.pixelSize: 14
             color: "#ffffff"
+            Layout.fillWidth: true
         }
 
         TextField {
             id: nameField
+            placeholderText: "Название"
             Layout.fillWidth: true
-            placeholderText: "Например: Читать книгу"
-            text: habitName
-            onTextChanged: habitName = text
+            color: "#ffffff"
 
             background: Rectangle {
                 color: "#2a2a2a"
                 radius: 8
                 border.color: nameField.activeFocus ? "#4ecdc4" : "#444444"
                 border.width: 1
+                height: nameField.implicitHeight + 10
             }
         }
 
         Label {
-            text: "Описание (необязательно):"
+            text: "Описание:"
             font.pixelSize: 14
             color: "#ffffff"
+            Layout.fillWidth: true
         }
 
         TextArea {
             id: descField
+            placeholderText: "Описание"
             Layout.fillWidth: true
-            Layout.preferredHeight: 80
-            placeholderText: "Опишите вашу цель..."
-            text: habitDescription
-            onTextChanged: habitDescription = text
+            Layout.preferredHeight: 100
             wrapMode: TextArea.Wrap
+            color: "#ffffff"
 
             background: Rectangle {
                 color: "#2a2a2a"
@@ -69,40 +77,11 @@ Dialog {
         }
     }
 
-    onAccepted: {
-        if (nameField.text.trim().length > 0) {
-            saveClicked(nameField.text.trim(), descField.text.trim());
-            if (editingMode && habitModel && habitIndex >= 0) {
-                habitModel.updateHabit(habitIndex, nameField.text.trim(), descField.text.trim());
-            } else if (!editingMode && habitModel) {
-                habitModel.addHabit(nameField.text.trim(), descField.text.trim());
-            }
-        }
-    }
-
-    onRejected: {
-        cancelClicked();
-    }
-
-    function openForEdit(index, model, name, description) {
-        editingMode = true;
+    // Функция открытия для редактирования
+    function openForEdit(index, name, description) {
         habitIndex = index;
-        habitModel = model;
-        habitName = name;
-        habitDescription = description;
         nameField.text = name;
         descField.text = description;
-        open();
-    }
-
-    function openForAdd(model) {
-        editingMode = false;
-        habitIndex = -1;
-        habitModel = model;
-        habitName = "";
-        habitDescription = "";
-        nameField.text = "";
-        descField.text = "";
-        open();
+        open(); // Вызываем стандартный метод open()
     }
 }

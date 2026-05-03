@@ -1,47 +1,60 @@
+pragma ComponentBehavior: Bound
+
 import QtQuick 2.15
-import QtQuick.Controls 2.15
-import QtQuick.Layouts 2.15
+import QtQuick.Controls
+import QtQuick.Layouts
+import QtQuick.Window
 
 Dialog {
-    id: editHabitDialog
-    title: editingMode ? "Редактировать привычку" : "Новая привычка"
+    id: addHabitDialog
+    title: "Новая привычка"
     modal: true
     standardButtons: Dialog.Save | Dialog.Cancel
     anchors.centerIn: parent
 
-    property bool editingMode: false
-    property int habitIndex: -1
-    property var habitModel: null
+    // Обязательное свойство: модель данных (инициализируется в HabitsView)
+    required property var habitModel
 
-    // Данные для редактирования/создания
-    property string habitName: ""
-    property string habitDescription: ""
+    onAccepted: {
+        if (nameField.text.trim() !== "") {
+            habitModel.addHabit(nameField.text.trim(), descField.text.trim());
+        }
+        // Очистка полей
+        nameField.text = "";
+        descField.text = "";
+        close(); // Стандартный метод закрытия Dialog
+    }
 
-    signal saveClicked(string name, string description)
-    signal cancelClicked()
+    onRejected: {
+        nameField.text = "";
+        descField.text = "";
+        close();
+    }
 
     ColumnLayout {
-        width: 300
+        anchors.fill: parent
         spacing: 15
 
         Label {
             text: "Название привычки:"
             font.pixelSize: 14
             color: "#ffffff"
+            Layout.fillWidth: true
         }
 
         TextField {
             id: nameField
-            Layout.fillWidth: true
             placeholderText: "Например: Читать книгу"
-            text: habitName
-            onTextChanged: habitName = text
+            Layout.fillWidth: true
+            color: "#ffffff"
+            focus: true
 
             background: Rectangle {
                 color: "#2a2a2a"
                 radius: 8
                 border.color: nameField.activeFocus ? "#4ecdc4" : "#444444"
                 border.width: 1
+                height: nameField.implicitHeight + 10
             }
         }
 
@@ -49,16 +62,16 @@ Dialog {
             text: "Описание (необязательно):"
             font.pixelSize: 14
             color: "#ffffff"
+            Layout.fillWidth: true
         }
 
         TextArea {
             id: descField
-            Layout.fillWidth: true
-            Layout.preferredHeight: 80
             placeholderText: "Опишите вашу цель..."
-            text: habitDescription
-            onTextChanged: habitDescription = text
+            Layout.fillWidth: true
+            Layout.preferredHeight: 100
             wrapMode: TextArea.Wrap
+            color: "#ffffff"
 
             background: Rectangle {
                 color: "#2a2a2a"
@@ -69,40 +82,10 @@ Dialog {
         }
     }
 
-    onAccepted: {
-        if (nameField.text.trim().length > 0) {
-            saveClicked(nameField.text.trim(), descField.text.trim());
-            if (editingMode && habitModel && habitIndex >= 0) {
-                habitModel.updateHabit(habitIndex, nameField.text.trim(), descField.text.trim());
-            } else if (!editingMode && habitModel) {
-                habitModel.addHabit(nameField.text.trim(), descField.text.trim());
-            }
-        }
-    }
-
-    onRejected: {
-        cancelClicked();
-    }
-
-    function openForEdit(index, model, name, description) {
-        editingMode = true;
-        habitIndex = index;
-        habitModel = model;
-        habitName = name;
-        habitDescription = description;
-        nameField.text = name;
-        descField.text = description;
-        open();
-    }
-
-    function openForAdd(model) {
-        editingMode = false;
-        habitIndex = -1;
-        habitModel = model;
-        habitName = "";
-        habitDescription = "";
+    // Пользовательская функция открытия (чтобы не конфликтовать с внутренними методами)
+    function openDialog() {
         nameField.text = "";
         descField.text = "";
-        open();
+        open(); // Вызываем стандартный метод open() базового класса Dialog
     }
 }

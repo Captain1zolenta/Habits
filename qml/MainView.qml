@@ -1,28 +1,12 @@
 import QtQuick 2.15
 import QtQuick.Controls
 import QtQuick.Layouts
-import Habits
 
 Rectangle {
     id: root
     color: "#0a0a0a"
 
-    // Создаем экземпляр модели привычек
-    HabitModel {
-        id: habitModel
-    }
-
-    // Диалог редактирования/добавления привычки
-    EditHabitDialog {
-        id: editHabitDialog
-    }
-
-    // Функция для открытия диалога редактирования
-    function openEditHabitDialog(index, name, description) {
-        editHabitDialog.openForEdit(index, habitModel, name, description);
-    }
-
-    // Заголовок
+    // Заголовок приложения
     Text {
         id: headerTitle
         text: "Мои Цели"
@@ -39,85 +23,22 @@ Rectangle {
         anchors.bottom: bottomNav.top
         anchors.left: parent.left
         anchors.right: parent.right
-        anchors.margins: 5
-        //spacing: 200
+        anchors.margins: 10
+        spacing: 20
 
+        // Секция Задач
         Tasks {
             Layout.fillWidth: true
         }
 
-        // Секция "Привычки"
-        ColumnLayout {
+        // Секция Привычек
+        HabitsView {
             Layout.fillWidth: true
             Layout.fillHeight: true
-            spacing: 10
-
-            RowLayout {
-                Layout.fillWidth: true
-
-                Text {
-                    text: "Привычки"
-                    font.pixelSize: 22
-                    font.bold: true
-                    color: "#ffffff"
-                }
-
-                Item { Layout.fillWidth: true }
-
-                Text {
-                    text: ""
-                    font.pixelSize: 12
-                    color: "#888888"
-                }
-            }
-
-            // Список привычек
-            ListView {
-                id: habitsListView
-                Layout.fillWidth: true
-                Layout.fillHeight: true
-                spacing: 12
-                clip: true
-
-                // Используем модель из C++
-                model: habitModel
-
-                delegate: HabitCard {
-                    id: habitDelegate
-                    width: habitsListView.width
-
-                    // Передаем индекс и ссылку на модель для действий
-                    habitIndex: index
-                    habitModel: root.habitModel // или просто habitModel, если видно контекст
-
-                    // Привязка свойств из модели
-                    habitId: model.habitId
-                    habitName: model.habitName
-                    description: model.description
-                    currentStreakValue: model.currentStreak
-                    bestStreakValue: model.bestStreak
-
-                    // САМОЕ ВАЖНОЕ: Передаем список дат (QList<QDate>) напрямую
-                    // В HabitCard нужно свойство property var completedDates
-                    completedDates: model.completedDates
-
-                    // Старые свойства day1..day7 больше не нужны, если мы передаем весь список дат
-                    // и вычисляем состояние круга внутри HabitCard на основе даты.
-                }
-
-                // Подсказка, если список пуст
-                Label {
-                    anchors.centerIn: parent
-                    text: "Список привычек пуст. Нажмите +, чтобы добавить."
-                    color: "#666666"
-                    horizontalAlignment: Text.AlignHCenter
-                    visible: habitsListView.count === 0
-                }
-            }
         }
     }
 
-    // Нижняя навигация
+    // Нижняя навигация (переключение вкладок и настройки)
     Rectangle {
         id: bottomNav
         anchors.bottom: parent.bottom
@@ -131,40 +52,6 @@ Rectangle {
         RowLayout {
             anchors.centerIn: parent
             spacing: 60
-
-            // Кнопка "+" (Добавить)
-            ColumnLayout {
-                spacing: 4
-
-                Rectangle {
-                    id: addButton
-                    width: 60
-                    height: 60
-                    radius: 30
-                    color: "#8b5cf6"
-                    Label {
-                        text: "+"
-                        font.pixelSize: 36
-                        color: "#ffffff"
-                        anchors.centerIn: parent
-                        font.bold: true
-                    }
-
-                    TapHandler {
-                        onTapped: {
-                            console.log("Add new habit clicked")
-                            editHabitDialog.openForAdd(habitModel);
-                        }
-                    }
-                }
-
-                Label {
-                    text: qsTr("Добавить")
-                    font.pixelSize: 10
-                    color: "#ffffff"
-                    Layout.alignment: Qt.AlignHCenter
-                }
-            }
 
             // Кнопка "Цели" (Tasks)
             ColumnLayout {
@@ -181,17 +68,17 @@ Rectangle {
                     color: "#ffffff"
                 }
                 TapHandler {
-                    onTapped: console.log("Open Tasks")
+                    onTapped: console.log("Открыть задачи")
                 }
             }
 
-            // Кнопка "Привычки" (Habits) - Активная
+            // Кнопка "Привычки" (Активная)
             ColumnLayout {
                 spacing: 4
                 Label {
-                    text: "●" // Или другая иконка активной вкладки
+                    text: "●"
                     font.pixelSize: 22
-                    color: "#4ecdc4" // Выделенный цвет
+                    color: "#4ecdc4"
                     Layout.alignment: Qt.AlignHCenter
                 }
                 Label {
@@ -200,7 +87,7 @@ Rectangle {
                     color: "#4ecdc4"
                 }
                 TapHandler {
-                    onTapped: console.log("Open Habits (Current)")
+                    onTapped: console.log("Открыть привычки")
                 }
             }
 
@@ -219,7 +106,7 @@ Rectangle {
                     color: "#888888"
                 }
                 TapHandler {
-                    onTapped: console.log("Open Preference")
+                    onTapped: console.log("Открыть настройки")
                 }
             }
         }
