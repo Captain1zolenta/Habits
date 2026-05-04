@@ -10,21 +10,22 @@ Dialog {
     title: "Редактировать привычку"
     modal: true
     standardButtons: Dialog.Save | Dialog.Cancel
-    anchors.centerIn: parent
 
-    // Обязательное свойство: модель данных
     required property var habitModel
     property int habitIndex: -1
 
     onAccepted: {
-        if (nameField.text.trim() !== "") {
-            habitModel.updateHabit(habitIndex, nameField.text.trim(), descField.text.trim());
+        let name = nameField.text.trim()
+        let desc = descField.text.trim()
+
+        if (name !== "" && habitModel && habitIndex >= 0) {
+            habitModel.updateHabit(habitIndex, name, desc)
         }
-        close();
+        close()
     }
 
     onRejected: {
-        close();
+        close()
     }
 
     ColumnLayout {
@@ -43,7 +44,6 @@ Dialog {
             placeholderText: "Название"
             Layout.fillWidth: true
             color: "#ffffff"
-
             background: Rectangle {
                 color: "#2a2a2a"
                 radius: 8
@@ -67,7 +67,6 @@ Dialog {
             Layout.preferredHeight: 100
             wrapMode: TextArea.Wrap
             color: "#ffffff"
-
             background: Rectangle {
                 color: "#2a2a2a"
                 radius: 8
@@ -77,11 +76,10 @@ Dialog {
         }
     }
 
-    // Функция открытия для редактирования
     function openForEdit(index, name, description) {
-        habitIndex = index;
-        nameField.text = name;
-        descField.text = description;
-        open(); // Вызываем стандартный метод open()
+        habitIndex = index
+        nameField.text = name
+        descField.text = description
+        open()
     }
 }

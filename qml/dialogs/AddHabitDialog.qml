@@ -6,29 +6,29 @@ import QtQuick.Layouts
 import QtQuick.Window
 
 Dialog {
-    id: addHabitDialog
-    title: "Новая привычка"
+    id: habitDialog
+    title: "Добавление новой привычки"
     modal: true
-    standardButtons: Dialog.Save | Dialog.Cancel
-    anchors.centerIn: parent
+    standardButtons: DialogButtonBox.Ok | DialogButtonBox.Cancel
 
-    // Обязательное свойство: модель данных (инициализируется в HabitsView)
+    x: Math.round((parent.width - width) / 2)
+    y: Math.round((parent.height - height) / 2)
+
     required property var habitModel
 
     onAccepted: {
         if (nameField.text.trim() !== "") {
-            habitModel.addHabit(nameField.text.trim(), descField.text.trim());
+            habitModel.addHabit(nameField.text.trim(), descField.text.trim())
         }
-        // Очистка полей
-        nameField.text = "";
-        descField.text = "";
-        close(); // Стандартный метод закрытия Dialog
+        // Сброс полей
+        nameField.text = ""
+        descField.text = ""
+        periodBox.currentIndex = 0
     }
 
     onRejected: {
-        nameField.text = "";
-        descField.text = "";
-        close();
+        nameField.text = ""
+        descField.text = ""
     }
 
     ColumnLayout {
@@ -36,56 +36,40 @@ Dialog {
         spacing: 15
 
         Label {
-            text: "Название привычки:"
-            font.pixelSize: 14
-            color: "#ffffff"
+            text: "Название привычки"
             Layout.fillWidth: true
+            font.bold: true
         }
 
         TextField {
             id: nameField
-            placeholderText: "Например: Читать книгу"
+            placeholderText: "Например: Зарядка по утрам"
             Layout.fillWidth: true
-            color: "#ffffff"
             focus: true
-
-            background: Rectangle {
-                color: "#2a2a2a"
-                radius: 8
-                border.color: nameField.activeFocus ? "#4ecdc4" : "#444444"
-                border.width: 1
-                height: nameField.implicitHeight + 10
-            }
         }
 
         Label {
-            text: "Описание (необязательно):"
-            font.pixelSize: 14
-            color: "#ffffff"
+            text: "Описание (опционально)"
             Layout.fillWidth: true
+            font.bold: true
         }
 
-        TextArea {
+        TextField {
             id: descField
-            placeholderText: "Опишите вашу цель..."
+            placeholderText: "Зачем я это делаю?"
             Layout.fillWidth: true
-            Layout.preferredHeight: 100
-            wrapMode: TextArea.Wrap
-            color: "#ffffff"
-
-            background: Rectangle {
-                color: "#2a2a2a"
-                radius: 8
-                border.color: descField.activeFocus ? "#4ecdc4" : "#444444"
-                border.width: 1
-            }
         }
-    }
 
-    // Пользовательская функция открытия (чтобы не конфликтовать с внутренними методами)
-    function openDialog() {
-        nameField.text = "";
-        descField.text = "";
-        open(); // Вызываем стандартный метод open() базового класса Dialog
+        Label {
+            text: "Периодичность"
+            Layout.fillWidth: true
+            font.bold: true
+        }
+
+        ComboBox {
+            id: periodBox
+            Layout.fillWidth: true
+            model: ["Ежедневно", "Еженедельно", "Ежемесячно"]
+        }
     }
 }

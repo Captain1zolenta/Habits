@@ -8,9 +8,6 @@ ColumnLayout {
     Layout.fillWidth: true
     spacing: 10
 
-    // Флаг для отображения/скрытия списка (аналог showDetails в Tasks)
-    property bool showDetails: true
-
     // --- Заголовок с кнопками управления ---
     RowLayout {
         Layout.fillWidth: true
@@ -45,14 +42,10 @@ ColumnLayout {
             ToolTip.delay: 500
 
             onClicked: {
-                // Вызываем метод refresh() у модели, если он существует
-                if (habitModel && typeof habitModel.refresh === 'function') {
-                    habitModel.refresh();
-                } else {
-                    console.log("Метод refresh() не найден в модели, пробуем перезагрузку данных...");
-                    // Если метода нет, можно просто эмулировать изменение или ничего не делать
-                    // Данные обновятся автоматически при изменении модели
-                }
+                // QAbstractListModel обновляется автоматически через сигналы.
+                // Принудительная перезагрузка не требуется, но если нужно:
+                // habitModel.loadHabitsFromDb() - если бы этот метод был public
+                console.log("Список привычек актуален (обновляется автоматически)")
             }
         }
 
@@ -77,21 +70,18 @@ ColumnLayout {
             ToolTip.delay: 500
 
             onClicked: {
-                // Открываем диалог добавления
-                addHabitDialog.openDialog();
+                addHabitDialog.open()
             }
         }
 
-        // Кнопка скрытия/раскрытия (▼ / ▶)
+        // Кнопка скрытия/раскрытия
         Label {
             text: showDetails ? "▼" : "▶"
             font.pixelSize: 12
             color: "#888888"
 
             TapHandler {
-                onTapped: {
-                    showDetails = !showDetails;
-                }
+                onTapped: showDetails = !showDetails
             }
         }
     }
@@ -106,24 +96,23 @@ ColumnLayout {
         visible: showDetails
         opacity: visible ? 1.0 : 0.0
 
-        // Анимация плавного появления
         Behavior on opacity { NumberAnimation { duration: 200 } }
 
-        model: habitModel // Берем модель из глобального контекста
+        model: habitModel
 
         delegate: HabitCard {
             width: habitsListView.width
             habitIndex: index
-            habitName: model.habitName
+            habitName: model.name
             description: model.description
             currentStreakValue: model.currentStreak
             bestStreakValue: model.bestStreak
             completedDates: model.completedDates
-            habitModel: habitModel // Передаем модель для действий
+            habitModel: habitsSection.habitModel
 
             // Обработка сигнала редактирования
             onEditRequested: function(index, name, desc) {
-                editHabitDialog.openForEdit(index, name, desc);
+                editHabitDialog.openForEdit(index, name, desc)
             }
         }
 
@@ -137,18 +126,15 @@ ColumnLayout {
     }
 
     // --- Диалоги ---
-    // Диалоги обращаются к habitModel напрямую из глобального контекст
     AddHabitDialog {
         id: addHabitDialog
-        //habitModel: habitModel
+        // Передаем глобальную модель в диалог
+        habitModel: habitModel
     }
 
     EditHabitDialog {
         id: editHabitDialog
-        //habitModel: habitModel
-    }
-
-    Component.onCompleted: {
-        console.log("HabitsView загружен");
+        // Передаем глобальную модель в диалог
+        habitModel: habitModel
     }
 }
