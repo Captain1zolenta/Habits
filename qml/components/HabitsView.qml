@@ -137,15 +137,15 @@ ColumnLayout {
     }
 
     // --- Диалоги ---
-    // Явно передаем habitModel в свойство required property диалогов
+    // Диалоги обращаются к habitModel напрямую из глобального контекст
     AddHabitDialog {
         id: addHabitDialog
-        habitModel: habitModel
+        //habitModel: habitModel
     }
 
     EditHabitDialog {
         id: editHabitDialog
-        habitModel: habitModel
+        //habitModel: habitModel
     }
 
     Component.onCompleted: {
